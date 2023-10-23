@@ -15,6 +15,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
 
+<?import javafx.scene.control.ComboBox?>
 <VBox spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.java_alk_ea.Controller">
     <MenuBar fx:id="menuBar">
@@ -66,5 +67,7 @@
     <TableView fx:id="tv1" >
     </TableView>
 
+    <ComboBox fx:id="cb1"/>
+    <Button onAction="#bt2Click">Módosít</Button>
 
 </VBox>

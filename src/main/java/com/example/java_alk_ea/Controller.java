@@ -8,10 +8,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import org.hibernate.Session;
@@ -27,7 +25,7 @@ public class Controller {
     @FXML private Label lb1;
     @FXML private GridPane gp1;
     @FXML private TextField tfGyarto, tfTipus, tfKijelzo,tfMemoria,tfMerevlemez,tfVideovezerlo,tfAr,tfProcesszorgyarto,tfProcesszortipus,tfOprendszernev,tfDb;
-
+    @FXML private ComboBox cb1;
 
     @FXML private TableView tv1;
     @FXML private TableColumn<Gep, String> IDCol;
@@ -103,6 +101,7 @@ public class Controller {
 
         gp1.setVisible(false);
         gp1.setManaged(false);
+
     }
 
 //A menuCreateClick metódus megjeleníti az új adatok beviteléhez a GridPane-t
@@ -153,7 +152,22 @@ public class Controller {
     }
 
 
-    @FXML protected void menuUpdateClick() {}
+    @FXML protected void menuUpdateClick() {
+        gp1.setVisible(true);
+        gp1.setManaged(true);
+    }
+    @FXML private void initialize()
+    {
+        cb1.getItems().addAll("Option A", "Option B", "Option C");
+        cb1.getSelectionModel().select("Option B");
+    }
+
+    @FXML protected void bt2Click() {
+
+    }
+
     @FXML protected void menuDeleteClick() {}
+
+
 
 }
