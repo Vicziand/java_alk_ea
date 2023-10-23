@@ -4,7 +4,7 @@
 ### Viczián Dániel bejegyzés
 Elkészült a projekt, illetve külön egy sql adatbázis.
 Elkészültek még:
-- adatbáziskapcsolat
+- adatbázis kapcsolat
 - Adatbázis menü Read és a Create menü
 - Sikeresen lehet olvasni az adatbázisból
 - Sikeresen lehet írni az adatbázisba
