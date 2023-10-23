@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 5.3//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration">
+<hibernate-configuration>
+    <session-factory>
+        <property name="connection.url">jdbc:sqlite:/c:/adatbazis/notebook.db</property>
+        <property name="dialect">org.sqlite.hibernate.dialect.SQLiteDialect</property>
+        <property name="connection.driver_class">org.sqlite.JDBC</property>
+        <mapping class="Grafikus.Gep"/>
+        <mapping class="Grafikus.GepCreate"/>
+        <mapping class="Grafikus.Oprendszer"/>
+        <mapping class="Grafikus.Processzor"/>
+    </session-factory>
+</hibernate-configuration>
