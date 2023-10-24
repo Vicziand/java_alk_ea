@@ -12,11 +12,15 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import java.lang.module.Configuration;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +29,7 @@ public class Controller {
     @FXML private Label lb1;
     @FXML private GridPane gp1;
     @FXML private TextField tfGyarto, tfTipus, tfKijelzo,tfMemoria,tfMerevlemez,tfVideovezerlo,tfAr,tfProcesszorgyarto,tfProcesszortipus,tfOprendszernev,tfDb;
+    @FXML private GridPane gpUpdate;
     @FXML private ComboBox cb1;
 
     @FXML private TableView tv1;
@@ -101,6 +106,8 @@ public class Controller {
 
         gp1.setVisible(false);
         gp1.setManaged(false);
+        gpUpdate.setVisible(false);
+        gpUpdate.setManaged(false);
 
     }
 
@@ -143,7 +150,7 @@ public class Controller {
     }
 
 //bt1Click metódus a Küldés gomb megnyomása után a Create metódus meghívása
-    @FXML void bt1Click(){
+    @FXML void btCreateClick(){
         Create();
         ElemekTörlése();
         lb1.setVisible(true);
@@ -153,16 +160,38 @@ public class Controller {
 
 
     @FXML protected void menuUpdateClick() {
-        gp1.setVisible(true);
-        gp1.setManaged(true);
-    }
-    @FXML private void initialize()
-    {
-        cb1.getItems().addAll("Option A", "Option B", "Option C");
-        cb1.getSelectionModel().select("Option B");
+        gpUpdate.setVisible(true);
+        gpUpdate.setManaged(true);
+
+
+        tv1.setVisible(false);
+        tv1.setManaged(false);
+        gp1.setVisible(false);
+        gp1.setManaged(false);
     }
 
-    @FXML protected void bt2Click() {
+
+    public void initializeCbWithIds() {
+        Transaction t = null;
+        if (factory != null) {
+            try (Session session = factory.openSession()) {
+                t = session.beginTransaction();
+                ElemekTörlése();
+                List<Integer> ids = session.createQuery("SELECT id FROM Gep", Integer.class).list();
+                    ObservableList<Integer> idList = FXCollections.observableArrayList(ids);
+                    cb1.setItems(idList);
+                t.commit();
+            } catch (HibernateException e) {
+                if (t != null && t.isActive()) {
+                    t.rollback();
+                }
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    @FXML protected void btUpdateClick() {
 
     }
 

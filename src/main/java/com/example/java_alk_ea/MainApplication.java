@@ -27,12 +27,15 @@ public class MainApplication extends Application {
 
         // JavaFX alkalmazás inicializálása
         Scene scene = new Scene(root);
+        stage.setWidth(800);
+        stage.setHeight(600);
         stage.setScene(scene);
         stage.show();
 
         Controller controller = loader.getController();
         controller.initializeSessionFactory(factory);
         controller.menuReadClick();
+        controller.initializeCbWithIds();
     }
 
     public static void main(String[] args) {
@@ -43,7 +46,7 @@ public class MainApplication extends Application {
         Metadata metadata = new MetadataSources(standardRegistry).getMetadataBuilder().build();
         factory = metadata.getSessionFactoryBuilder().build();
 
-        launch();
+        launch(args);
         }
 
     }

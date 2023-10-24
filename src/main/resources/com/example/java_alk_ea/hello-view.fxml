@@ -61,13 +61,16 @@
         <Label GridPane.rowIndex="10" GridPane.columnIndex="0">Darab:</Label>
         <TextField fx:id="tfDb" GridPane.rowIndex="10" GridPane.columnIndex="1"></TextField>
 
-        <Button onAction="#bt1Click" GridPane.rowIndex="11" GridPane.columnIndex="1" >Küldés</Button>
+        <Button onAction="#btCreateClick" GridPane.rowIndex="11" GridPane.columnIndex="1" >Küldés</Button>
     </GridPane>
 
     <TableView fx:id="tv1" >
     </TableView>
 
-    <ComboBox fx:id="cb1"/>
-    <Button onAction="#bt2Click">Módosít</Button>
+    <GridPane fx:id="gpUpdate" hgap="2" vgap="4">
+    <Label text="Kérem válassza ki a módosítani kívánt rekordot Id alapján!"/>
+    <ComboBox fx:id="cb1" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+    <Button onAction="#btUpdateClick" GridPane.rowIndex="3" GridPane.columnIndex="1">Módosít</Button>
+    </GridPane>
 
 </VBox>
