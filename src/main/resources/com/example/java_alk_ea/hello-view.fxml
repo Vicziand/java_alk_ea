@@ -34,6 +34,11 @@
                     <MenuItem text="Delete" onAction="#menuDeleteClick"/>
                 </items>
             </Menu>
+            <Menu text="Rest1">
+                <items>
+                    <MenuItem text ="Create" onAction="#menuCreateClickRest"/>
+                </items>
+            </Menu>
         </menus>
     </MenuBar>
     <Label fx:id="lb1">Notebook adatbázis</Label>

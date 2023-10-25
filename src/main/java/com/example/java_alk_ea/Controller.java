@@ -116,6 +116,8 @@ public class Controller {
         ElemekTörlése();
         gp1.setVisible(true);
         gp1.setManaged(true);
+        gpUpdate.setVisible(false);
+        gpUpdate.setManaged(false);
     }
 
 // Create metódus segítségével adjuk hozzá az adatokat az adatbázishoz
@@ -162,7 +164,8 @@ public class Controller {
     @FXML protected void menuUpdateClick() {
         gpUpdate.setVisible(true);
         gpUpdate.setManaged(true);
-
+        ElemekTörlése();
+        initializeCbWithIds();
 
         tv1.setVisible(false);
         tv1.setManaged(false);
@@ -176,10 +179,30 @@ public class Controller {
         if (factory != null) {
             try (Session session = factory.openSession()) {
                 t = session.beginTransaction();
-                ElemekTörlése();
+
                 List<Integer> ids = session.createQuery("SELECT id FROM Gep", Integer.class).list();
-                    ObservableList<Integer> idList = FXCollections.observableArrayList(ids);
-                    cb1.setItems(idList);
+                ObservableList<Integer> idList = FXCollections.observableArrayList(ids);
+                cb1.setItems(idList);
+
+                ElemekTörlése();
+
+                cb1.setOnAction(event -> {
+                    Object selectedValue = cb1.getValue();
+                    if (selectedValue != null && selectedValue instanceof Integer) {
+                        Integer selectedId = (Integer) selectedValue;
+
+                        Gep gep = session.get(Gep.class, selectedId);
+                        if (gep != null) {
+                            Processzor proc = gep.getProcesszor();
+                            tfGyarto.setText(gep.getGyarto());
+                            tfTipus.setText(gep.getTipus());
+                            tfKijelzo.setText(String.valueOf(gep.getKijelzo()));
+                            // ...
+                            tfDb.setText(String.valueOf(gep.getDb()));
+                        }
+                    }
+                });
+
                 t.commit();
             } catch (HibernateException e) {
                 if (t != null && t.isActive()) {
@@ -197,6 +220,9 @@ public class Controller {
 
     @FXML protected void menuDeleteClick() {}
 
+    @FXML
+    protected void menuCreateClickRest() {
 
+    }
 
 }

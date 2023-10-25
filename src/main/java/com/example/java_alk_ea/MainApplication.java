@@ -34,8 +34,8 @@ public class MainApplication extends Application {
 
         Controller controller = loader.getController();
         controller.initializeSessionFactory(factory);
-        controller.menuReadClick();
-        controller.initializeCbWithIds();
+        //controller.menuReadClick();
+
     }
 
     public static void main(String[] args) {
@@ -48,5 +48,6 @@ public class MainApplication extends Application {
 
         launch(args);
         }
+
 
     }
