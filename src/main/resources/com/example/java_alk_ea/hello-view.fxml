@@ -66,7 +66,7 @@
         <Label GridPane.rowIndex="10" GridPane.columnIndex="0">Darab:</Label>
         <TextField fx:id="tfDb" GridPane.rowIndex="10" GridPane.columnIndex="1"></TextField>
 
-        <Button onAction="#btCreateClick" GridPane.rowIndex="11" GridPane.columnIndex="1" >Küldés</Button>
+        <Button fx:id="btCreate" onAction="#btCreateClick" GridPane.rowIndex="11" GridPane.columnIndex="1" >Küldés</Button>
     </GridPane>
 
     <TableView fx:id="tv1" >
@@ -74,8 +74,8 @@
 
     <GridPane fx:id="gpUpdate" hgap="2" vgap="4">
     <Label text="Kérem válassza ki a módosítani kívánt rekordot Id alapján!"/>
-    <ComboBox fx:id="cb1" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-    <Button onAction="#btUpdateClick" GridPane.rowIndex="3" GridPane.columnIndex="1">Módosít</Button>
+    <ComboBox fx:id="cb1" GridPane.rowIndex="2" GridPane.columnIndex="1" onAction="#handleComboBoxSelection"/>
     </GridPane>
 
+    <Button fx:id="btUpdate" onAction="#btUpdateClick" GridPane.rowIndex="3" GridPane.columnIndex="1">Módosít</Button>
 </VBox>

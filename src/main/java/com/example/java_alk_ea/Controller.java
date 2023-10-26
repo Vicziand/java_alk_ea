@@ -4,6 +4,7 @@ import Grafikus.Gep;
 import Grafikus.GepCreate;
 import Grafikus.Oprendszer;
 import Grafikus.Processzor;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +32,8 @@ public class Controller {
     @FXML private TextField tfGyarto, tfTipus, tfKijelzo,tfMemoria,tfMerevlemez,tfVideovezerlo,tfAr,tfProcesszorgyarto,tfProcesszortipus,tfOprendszernev,tfDb;
     @FXML private GridPane gpUpdate;
     @FXML private ComboBox cb1;
+    @FXML private Button btUpdate;
+    @FXML private Button btCreate;
 
     @FXML private TableView tv1;
     @FXML private TableColumn<Gep, String> IDCol;
@@ -118,6 +121,8 @@ public class Controller {
         gp1.setManaged(true);
         gpUpdate.setVisible(false);
         gpUpdate.setManaged(false);
+        tv1.setVisible(false);
+        tv1.setManaged(false);
     }
 
 // Create metódus segítségével adjuk hozzá az adatokat az adatbázishoz
@@ -166,7 +171,6 @@ public class Controller {
         gpUpdate.setManaged(true);
         ElemekTörlése();
         initializeCbWithIds();
-
         tv1.setVisible(false);
         tv1.setManaged(false);
         gp1.setVisible(false);
@@ -175,34 +179,16 @@ public class Controller {
 
 
     public void initializeCbWithIds() {
+        btUpdate.setVisible(false);
+        btUpdate.setManaged(false);
         Transaction t = null;
         if (factory != null) {
             try (Session session = factory.openSession()) {
                 t = session.beginTransaction();
-
+                ElemekTörlése();
                 List<Integer> ids = session.createQuery("SELECT id FROM Gep", Integer.class).list();
                 ObservableList<Integer> idList = FXCollections.observableArrayList(ids);
                 cb1.setItems(idList);
-
-                ElemekTörlése();
-
-                cb1.setOnAction(event -> {
-                    Object selectedValue = cb1.getValue();
-                    if (selectedValue != null && selectedValue instanceof Integer) {
-                        Integer selectedId = (Integer) selectedValue;
-
-                        Gep gep = session.get(Gep.class, selectedId);
-                        if (gep != null) {
-                            Processzor proc = gep.getProcesszor();
-                            tfGyarto.setText(gep.getGyarto());
-                            tfTipus.setText(gep.getTipus());
-                            tfKijelzo.setText(String.valueOf(gep.getKijelzo()));
-                            // ...
-                            tfDb.setText(String.valueOf(gep.getDb()));
-                        }
-                    }
-                });
-
                 t.commit();
             } catch (HibernateException e) {
                 if (t != null && t.isActive()) {
@@ -213,16 +199,88 @@ public class Controller {
         }
     }
 
+    public void handleComboBoxSelection() {
+        gp1.setVisible(true);
+        gp1.setManaged(true);
+        btUpdate.setVisible(true);
+        btUpdate.setManaged(true);
+        btCreate.setVisible(false);
+        btCreate.setManaged(false);
+        gpUpdate.setVisible(false);
+        gpUpdate.setManaged(false);
+        Integer selectedId = (Integer) cb1.getValue();
+        if (selectedId != null) {
+            try (Session session = factory.openSession()) {
+
+                    Gep gep = session.get(Gep.class, selectedId);
+                    tfGyarto.setText(gep.getGyarto());
+                    tfTipus.setText(gep.getTipus());
+                    tfKijelzo.setText(String.valueOf(gep.getKijelzo()));
+                    tfMemoria.setText(String.valueOf(gep.getMemoria()));
+                    tfMerevlemez.setText(String.valueOf(gep.getMerevlemez()));
+                    tfVideovezerlo.setText(gep.getVideovezerlo());
+                    tfAr.setText(String.valueOf(gep.getAr()));
+                    tfProcesszorgyarto.setText(gep.getProcesszor().getGyarto());
+                    tfProcesszortipus.setText(gep.getProcesszor().getTipus());
+                    tfOprendszernev.setText(gep.getOprendszer().getNev());
+                    tfDb.setText(String.valueOf(gep.getDb()));
+
+            } catch (HibernateException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     @FXML protected void btUpdateClick() {
+        Integer selectedId = (Integer) cb1.getValue();
+        if (selectedId != null) {
+            try (Session session = factory.openSession()) {
+                Transaction t = session.beginTransaction();
 
+                Query<Processzor> processzorQuery = session.createQuery("FROM Processzor WHERE Gyarto = :gyarto AND Tipus = :tipus", Processzor.class);
+                processzorQuery.setParameter("gyarto", tfProcesszorgyarto.getText());
+                processzorQuery.setParameter("tipus", tfProcesszortipus.getText());
+                Processzor processzor = processzorQuery.uniqueResult();
+
+                Query<Oprendszer> oprendszerQuery = session.createQuery("FROM Oprendszer WHERE Nev = :nev", Oprendszer.class);
+                oprendszerQuery.setParameter("nev", tfOprendszernev.getText());
+                Oprendszer oprendszer = oprendszerQuery.uniqueResult();
+
+                String gyarto = tfGyarto.getText();
+                String tipus = tfTipus.getText();
+                double kijelzo = Double.parseDouble(tfKijelzo.getText());
+                int memoria = Integer.parseInt(tfMemoria.getText());
+                int merevlemez = Integer.parseInt(tfMerevlemez.getText());
+                String videovezerlo = tfVideovezerlo.getText();
+                int ar = Integer.parseInt(tfAr.getText());
+                int processzorId = processzor.getId();
+                int oprendszerid = oprendszer.getId();
+                int db = Integer.parseInt(tfDb.getText());
+
+                    Gep gep = session.get(Gep.class, selectedId);
+
+                    gep.setGyarto(gyarto);
+                    gep.setTipus(tipus);
+                    gep.setKijelzo(kijelzo);
+                    gep.setMemoria(memoria);
+                    gep.setMerevlemez(merevlemez);
+                    gep.setVideovezerlo(videovezerlo);
+                    gep.setAr(ar);
+                    gep.setProcesszorid(processzorId);
+                    gep.setOprendszerid(oprendszerid);
+                    gep.setDb(db);
+
+                session.update(gep);
+                t.commit();
+            } catch (HibernateException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML protected void menuDeleteClick() {}
 
-    @FXML
-    protected void menuCreateClickRest() {
-
-    }
+    @FXML protected void menuCreateClickRest(){}
 
 }
