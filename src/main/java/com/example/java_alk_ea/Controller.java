@@ -27,13 +27,13 @@ import java.util.List;
 
 public class Controller {
 
-    @FXML private Label lb1;
+    @FXML private Label lb1,lb2;
     @FXML private GridPane gp1;
     @FXML private TextField tfGyarto, tfTipus, tfKijelzo,tfMemoria,tfMerevlemez,tfVideovezerlo,tfAr,tfProcesszorgyarto,tfProcesszortipus,tfOprendszernev,tfDb;
     @FXML private GridPane gpUpdate;
     @FXML private ComboBox cb1;
-    @FXML private Button btUpdate;
-    @FXML private Button btCreate;
+    @FXML private Button btUpdate,btCreate,btDelete;
+
 
     @FXML private TableView tv1;
     @FXML private TableColumn<Gep, String> IDCol;
@@ -60,6 +60,17 @@ public class Controller {
 //A ElemekTörlése metódus  a TableView (tv1) táblázatban  előző elemeit törli.
     private void ElemekTörlése() {
         tv1.getItems().clear();
+        tfGyarto.clear();
+        tfTipus.clear();
+        tfKijelzo.clear();
+        tfMemoria.clear();
+        tfMerevlemez.clear();
+        tfVideovezerlo.clear();
+        tfAr.clear();
+        tfProcesszorgyarto.clear();
+        tfProcesszortipus.clear();
+        tfOprendszernev.clear();
+        tfDb.clear();
     }
 
 
@@ -123,6 +134,10 @@ public class Controller {
         gpUpdate.setManaged(false);
         tv1.setVisible(false);
         tv1.setManaged(false);
+        btCreate.setVisible(true);
+        btCreate.setManaged(true);
+        btUpdate.setVisible(false);
+
     }
 
 // Create metódus segítségével adjuk hozzá az adatokat az adatbázishoz
@@ -134,10 +149,24 @@ public class Controller {
                     t = session.beginTransaction();
                 }
 
-        Processzor proc = new Processzor(tfProcesszorgyarto.getText(), tfProcesszortipus.getText());
-        session.save(proc);
-        Oprendszer opr = new Oprendszer(tfOprendszernev.getText());
-        session.save(opr);
+                Query<Processzor> processzorQuery = session.createQuery("FROM Processzor WHERE Gyarto = :gyarto AND Tipus = :tipus", Processzor.class);
+                processzorQuery.setParameter("gyarto", tfProcesszorgyarto.getText());
+                processzorQuery.setParameter("tipus", tfProcesszortipus.getText());
+                Processzor proc = processzorQuery.uniqueResult();
+
+                if (proc == null) {
+                    proc = new Processzor(tfProcesszorgyarto.getText(), tfProcesszortipus.getText());
+                    session.save(proc);
+                }
+
+                Query<Oprendszer> oprendszerQuery = session.createQuery("FROM Oprendszer WHERE Nev = :nev", Oprendszer.class);
+                oprendszerQuery.setParameter("nev", tfOprendszernev.getText());
+                Oprendszer opr = oprendszerQuery.uniqueResult();
+
+                if (opr == null) {
+                    opr = new Oprendszer(tfOprendszernev.getText());
+                    session.save(opr);
+                }
 
         GepCreate gepcreate = new GepCreate(tfGyarto.getText(), tfTipus.getText(), Double.parseDouble(tfKijelzo.getText()),
                 Integer.parseInt(tfMemoria.getText()), Integer.parseInt(tfMerevlemez.getText()),
@@ -158,8 +187,8 @@ public class Controller {
 
 //bt1Click metódus a Küldés gomb megnyomása után a Create metódus meghívása
     @FXML void btCreateClick(){
-        Create();
         ElemekTörlése();
+        Create();
         lb1.setVisible(true);
         lb1.setManaged(true);
         lb1.setText("Adatok beírva az adatbázisba");
@@ -170,11 +199,12 @@ public class Controller {
         gpUpdate.setVisible(true);
         gpUpdate.setManaged(true);
         ElemekTörlése();
-        initializeCbWithIds();
         tv1.setVisible(false);
         tv1.setManaged(false);
         gp1.setVisible(false);
         gp1.setManaged(false);
+        btCreate.setVisible(false);
+        initializeCbWithIds();
     }
 
 
@@ -212,18 +242,18 @@ public class Controller {
         if (selectedId != null) {
             try (Session session = factory.openSession()) {
 
-                    Gep gep = session.get(Gep.class, selectedId);
-                    tfGyarto.setText(gep.getGyarto());
-                    tfTipus.setText(gep.getTipus());
-                    tfKijelzo.setText(String.valueOf(gep.getKijelzo()));
-                    tfMemoria.setText(String.valueOf(gep.getMemoria()));
-                    tfMerevlemez.setText(String.valueOf(gep.getMerevlemez()));
-                    tfVideovezerlo.setText(gep.getVideovezerlo());
-                    tfAr.setText(String.valueOf(gep.getAr()));
-                    tfProcesszorgyarto.setText(gep.getProcesszor().getGyarto());
-                    tfProcesszortipus.setText(gep.getProcesszor().getTipus());
-                    tfOprendszernev.setText(gep.getOprendszer().getNev());
-                    tfDb.setText(String.valueOf(gep.getDb()));
+                Gep gep = session.get(Gep.class, selectedId);
+                tfGyarto.setText(gep.getGyarto());
+                tfTipus.setText(gep.getTipus());
+                tfKijelzo.setText(String.valueOf(gep.getKijelzo()));
+                tfMemoria.setText(String.valueOf(gep.getMemoria()));
+                tfMerevlemez.setText(String.valueOf(gep.getMerevlemez()));
+                tfVideovezerlo.setText(gep.getVideovezerlo());
+                tfAr.setText(String.valueOf(gep.getAr()));
+                tfProcesszorgyarto.setText(gep.getProcesszor().getGyarto());
+                tfProcesszortipus.setText(gep.getProcesszor().getTipus());
+                tfOprendszernev.setText(gep.getOprendszer().getNev());
+                tfDb.setText(String.valueOf(gep.getDb()));
 
             } catch (HibernateException e) {
                 e.printStackTrace();
@@ -273,13 +303,52 @@ public class Controller {
 
                 session.update(gep);
                 t.commit();
+                btUpdate.setVisible(false);
+                btUpdate.setManaged(false);
+                gp1.setVisible(false);
+                gp1.setManaged(false);
+                lb2.setVisible(true);
+                lb2.setManaged(true);
+                lb1.setVisible(true);
+                lb1.setManaged(true);
+                lb1.setText("Adatok módosítva az adatbázisban");
+
             } catch (HibernateException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    @FXML protected void menuDeleteClick() {}
+
+    @FXML protected void menuDeleteClick() {
+        gpUpdate.setVisible(true);
+        gpUpdate.setManaged(true);
+        tv1.setVisible(false);
+        tv1.setManaged(false);
+        initializeCbWithIds();
+
+
+    }
+
+    @FXML protected void btDeleteClick() {
+        Integer selectedId = (Integer) cb1.getValue();
+        if (selectedId != null) {
+            try (Session session = factory.openSession()) {
+                Transaction t = session.beginTransaction();
+
+                Gep gep = session.get(Gep.class, selectedId);
+                session.delete(gep);
+
+                t.commit();
+
+                lb2.setVisible(true);
+                lb2.setManaged(true);
+                lb2.setText("Rekord törölve az adatbázisból");
+            } catch (HibernateException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @FXML protected void menuCreateClickRest(){}
 
