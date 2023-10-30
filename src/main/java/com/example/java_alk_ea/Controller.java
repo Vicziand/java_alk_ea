@@ -4,6 +4,8 @@ import Grafikus.Gep;
 import Grafikus.GepCreate;
 import Grafikus.Oprendszer;
 import Grafikus.Processzor;
+import Restful.RestClient;
+import Restful.User;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -23,41 +25,83 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Controller {
 
-    @FXML private Label lb1,lb2;
-    @FXML private GridPane gp1;
-    @FXML private TextField tfGyarto, tfTipus, tfKijelzo,tfMemoria,tfMerevlemez,tfVideovezerlo,tfAr,tfProcesszorgyarto,tfProcesszortipus,tfOprendszernev,tfDb;
-    @FXML private GridPane gpUpdate;
-    @FXML private ComboBox cb1;
-    @FXML private Button btUpdate,btCreate,btDelete;
+    @FXML
+    private Label lb1, lb2;
+    @FXML
+    private GridPane gp1;
+    @FXML
+    private TextField tfGyarto, tfTipus, tfKijelzo, tfMemoria, tfMerevlemez, tfVideovezerlo, tfAr, tfProcesszorgyarto, tfProcesszortipus, tfOprendszernev, tfDb;
+    @FXML
+    private GridPane gpUpdate;
+    @FXML
+    private ComboBox cb1;
+    @FXML
+    private Button btUpdate, btCreate, btDelete;
 
 
-    @FXML private TableView tv1;
-    @FXML private TableColumn<Gep, String> IDCol;
-    @FXML private TableColumn<Gep, String> gyartoCol;
-    @FXML private TableColumn<Gep, String> tipusCol;
-    @FXML private TableColumn<Gep, String> kijelzoCol;
-    @FXML private TableColumn<Gep, String> memoriaCol;
-    @FXML private TableColumn<Gep, String> merevlemezCol;
-    @FXML private TableColumn<Gep, String> videovezerloCol;
-    @FXML private TableColumn<Gep, String> arCol;
-    @FXML private TableColumn<Gep, String> processzorgyartoCol;
-    @FXML private TableColumn<Gep, String> processzortipusCol;
-    @FXML private TableColumn<Gep, String> oprendszernevCol;
+    @FXML
+    private TableView tv1;
+    @FXML
+    private TableColumn<Gep, String> IDCol;
+    @FXML
+    private TableColumn<Gep, String> gyartoCol;
+    @FXML
+    private TableColumn<Gep, String> tipusCol;
+    @FXML
+    private TableColumn<Gep, String> kijelzoCol;
+    @FXML
+    private TableColumn<Gep, String> memoriaCol;
+    @FXML
+    private TableColumn<Gep, String> merevlemezCol;
+    @FXML
+    private TableColumn<Gep, String> videovezerloCol;
+    @FXML
+    private TableColumn<Gep, String> arCol;
+    @FXML
+    private TableColumn<Gep, String> processzorgyartoCol;
+    @FXML
+    private TableColumn<Gep, String> processzortipusCol;
+    @FXML
+    private TableColumn<Gep, String> oprendszernevCol;
 
-    @FXML private TableColumn<Gep, String> dbCol;
+    @FXML
+    private TableColumn<Gep, String> dbCol;
+
+    @FXML
+    private TableView<User> tvRest;
+
+    @FXML
+    private TableColumn<User, String> colId;
+
+    @FXML
+    private TableColumn<User, String> colName;
+
+    @FXML
+    private TableColumn<User, String> colEmail;
+
+    @FXML
+    private TableColumn<User, String> colGender;
+
+    @FXML
+    private TableColumn<User, String> colStatus;
+
 
     SessionFactory factory;
 
-// SessionFactory inicializálása az adatbázis műveletekhez
+    // SessionFactory inicializálása az adatbázis műveletekhez
     public void initializeSessionFactory(SessionFactory factory) {
         this.factory = factory;
     }
 
-//A ElemekTörlése metódus  a TableView (tv1) táblázatban  előző elemeit törli.
+    //A ElemekTörlése metódus  a TableView (tv1) táblázatban  előző elemeit törli.
     private void ElemekTörlése() {
         tv1.getItems().clear();
         tfGyarto.clear();
@@ -75,41 +119,42 @@ public class Controller {
 
 
     //A menuReadClick metódus megjeleníti az adatokat a TableView-ben, és újra előkészíti a TableView oszlopait a friss adatok megjelenítésére.
-    @FXML protected void menuReadClick() {
+    @FXML
+    protected void menuReadClick() {
         try (Session session = factory.openSession()) {
             Transaction t = session.beginTransaction();
-        ElemekTörlése();
-        tv1.setVisible(true);
-        tv1.setManaged(true);
-        tv1.getColumns().removeAll(tv1.getColumns());
-        IDCol = new TableColumn("Id");
-        gyartoCol = new TableColumn("Gyártó");
-        tipusCol = new TableColumn("Típus");
-        kijelzoCol = new TableColumn("Kijelző");
-        memoriaCol = new TableColumn("Memória");
-        merevlemezCol = new TableColumn("Merevlemez");
-        videovezerloCol = new TableColumn("Videóvezérlő");
-        arCol = new TableColumn("Ár");
-        processzorgyartoCol = new TableColumn("Processzor gyártó");
-        processzortipusCol = new TableColumn("Processzor típus");
-        oprendszernevCol = new TableColumn("Op. rendszer név");
-        dbCol = new TableColumn("Darab");
+            ElemekTörlése();
+            tv1.setVisible(true);
+            tv1.setManaged(true);
+            tv1.getColumns().removeAll(tv1.getColumns());
+            IDCol = new TableColumn("Id");
+            gyartoCol = new TableColumn("Gyártó");
+            tipusCol = new TableColumn("Típus");
+            kijelzoCol = new TableColumn("Kijelző");
+            memoriaCol = new TableColumn("Memória");
+            merevlemezCol = new TableColumn("Merevlemez");
+            videovezerloCol = new TableColumn("Videóvezérlő");
+            arCol = new TableColumn("Ár");
+            processzorgyartoCol = new TableColumn("Processzor gyártó");
+            processzortipusCol = new TableColumn("Processzor típus");
+            oprendszernevCol = new TableColumn("Op. rendszer név");
+            dbCol = new TableColumn("Darab");
 
-        tv1.getColumns().addAll(IDCol, gyartoCol, tipusCol,kijelzoCol,memoriaCol,merevlemezCol,videovezerloCol,arCol,processzorgyartoCol,processzortipusCol,oprendszernevCol,dbCol);
-        IDCol.setCellValueFactory(new PropertyValueFactory<>("Id"));
-        gyartoCol.setCellValueFactory(new PropertyValueFactory<>("Gyarto"));
-        tipusCol.setCellValueFactory(new PropertyValueFactory<>("Tipus"));
-        kijelzoCol.setCellValueFactory(new PropertyValueFactory<>("Kijelzo"));
-        memoriaCol.setCellValueFactory(new PropertyValueFactory<>("Memoria"));
-        merevlemezCol.setCellValueFactory(new PropertyValueFactory<>("Merevlemez"));
-        videovezerloCol.setCellValueFactory(new PropertyValueFactory<>("Videovezerlo"));
-        arCol.setCellValueFactory(new PropertyValueFactory<>("Ar"));
-        processzorgyartoCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProcesszor().getGyarto()));
-        processzortipusCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProcesszor().getTipus()));
-        oprendszernevCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOprendszer().getNev()));
-        dbCol.setCellValueFactory(new PropertyValueFactory<>("Db"));
+            tv1.getColumns().addAll(IDCol, gyartoCol, tipusCol, kijelzoCol, memoriaCol, merevlemezCol, videovezerloCol, arCol, processzorgyartoCol, processzortipusCol, oprendszernevCol, dbCol);
+            IDCol.setCellValueFactory(new PropertyValueFactory<>("Id"));
+            gyartoCol.setCellValueFactory(new PropertyValueFactory<>("Gyarto"));
+            tipusCol.setCellValueFactory(new PropertyValueFactory<>("Tipus"));
+            kijelzoCol.setCellValueFactory(new PropertyValueFactory<>("Kijelzo"));
+            memoriaCol.setCellValueFactory(new PropertyValueFactory<>("Memoria"));
+            merevlemezCol.setCellValueFactory(new PropertyValueFactory<>("Merevlemez"));
+            videovezerloCol.setCellValueFactory(new PropertyValueFactory<>("Videovezerlo"));
+            arCol.setCellValueFactory(new PropertyValueFactory<>("Ar"));
+            processzorgyartoCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProcesszor().getGyarto()));
+            processzortipusCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProcesszor().getTipus()));
+            oprendszernevCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOprendszer().getNev()));
+            dbCol.setCellValueFactory(new PropertyValueFactory<>("Db"));
 
-        tv1.getItems().clear();
+            tv1.getItems().clear();
 
             List<Gep> lista = session.createQuery("FROM Gep").list();
             tv1.getItems().setAll(lista);
@@ -127,8 +172,9 @@ public class Controller {
 
     }
 
-//A menuCreateClick metódus megjeleníti az új adatok beviteléhez a GridPane-t
-    @FXML protected void menuCreateClick() {
+    //A menuCreateClick metódus megjeleníti az új adatok beviteléhez a GridPane-t
+    @FXML
+    protected void menuCreateClick() {
         ElemekTörlése();
         gp1.setVisible(true);
         gp1.setManaged(true);
@@ -143,8 +189,8 @@ public class Controller {
 
     }
 
-// Create metódus segítségével adjuk hozzá az adatokat az adatbázishoz
-    void Create(){
+    // Create metódus segítségével adjuk hozzá az adatokat az adatbázishoz
+    void Create() {
         try (Session session = factory.openSession()) {
             Transaction t = session.getTransaction();
             try {
@@ -171,14 +217,14 @@ public class Controller {
                     session.save(opr);
                 }
 
-        GepCreate gepcreate = new GepCreate(tfGyarto.getText(), tfTipus.getText(), Double.parseDouble(tfKijelzo.getText()),
-                Integer.parseInt(tfMemoria.getText()), Integer.parseInt(tfMerevlemez.getText()),
-                tfVideovezerlo.getText(), Integer.parseInt(tfAr.getText()), proc.getId(), opr.getId(),
-                Integer.parseInt(tfDb.getText()));
+                GepCreate gepcreate = new GepCreate(tfGyarto.getText(), tfTipus.getText(), Double.parseDouble(tfKijelzo.getText()),
+                        Integer.parseInt(tfMemoria.getText()), Integer.parseInt(tfMerevlemez.getText()),
+                        tfVideovezerlo.getText(), Integer.parseInt(tfAr.getText()), proc.getId(), opr.getId(),
+                        Integer.parseInt(tfDb.getText()));
 
-        session.save(gepcreate);
+                session.save(gepcreate);
 
-        t.commit();
+                t.commit();
             } catch (Exception e) {
                 if (t != null && t.isActive()) {
                     t.rollback();
@@ -188,8 +234,9 @@ public class Controller {
         }
     }
 
-//bt1Click metódus a Küldés gomb megnyomása után a Create metódus meghívása
-    @FXML void btCreateClick(){
+    //bt1Click metódus a Küldés gomb megnyomása után a Create metódus meghívása
+    @FXML
+    void btCreateClick() {
         ElemekTörlése();
         Create();
         lb1.setVisible(true);
@@ -198,7 +245,8 @@ public class Controller {
     }
 
 
-    @FXML protected void menuUpdateClick() {
+    @FXML
+    protected void menuUpdateClick() {
         gpUpdate.setVisible(true);
         gpUpdate.setManaged(true);
         ElemekTörlése();
@@ -265,7 +313,8 @@ public class Controller {
     }
 
 
-    @FXML protected void btUpdateClick() {
+    @FXML
+    protected void btUpdateClick() {
         Integer selectedId = (Integer) cb1.getValue();
         if (selectedId != null) {
             try (Session session = factory.openSession()) {
@@ -291,18 +340,18 @@ public class Controller {
                 int oprendszerid = oprendszer.getId();
                 int db = Integer.parseInt(tfDb.getText());
 
-                    Gep gep = session.get(Gep.class, selectedId);
+                Gep gep = session.get(Gep.class, selectedId);
 
-                    gep.setGyarto(gyarto);
-                    gep.setTipus(tipus);
-                    gep.setKijelzo(kijelzo);
-                    gep.setMemoria(memoria);
-                    gep.setMerevlemez(merevlemez);
-                    gep.setVideovezerlo(videovezerlo);
-                    gep.setAr(ar);
-                    gep.setProcesszorid(processzorId);
-                    gep.setOprendszerid(oprendszerid);
-                    gep.setDb(db);
+                gep.setGyarto(gyarto);
+                gep.setTipus(tipus);
+                gep.setKijelzo(kijelzo);
+                gep.setMemoria(memoria);
+                gep.setMerevlemez(merevlemez);
+                gep.setVideovezerlo(videovezerlo);
+                gep.setAr(ar);
+                gep.setProcesszorid(processzorId);
+                gep.setOprendszerid(oprendszerid);
+                gep.setDb(db);
 
                 session.update(gep);
                 t.commit();
@@ -323,7 +372,8 @@ public class Controller {
     }
 
 
-    @FXML protected void menuDeleteClick() {
+    @FXML
+    protected void menuDeleteClick() {
         gpUpdate.setVisible(true);
         gpUpdate.setManaged(true);
         btUpdate.setVisible(false);
@@ -337,7 +387,8 @@ public class Controller {
 
     }
 
-    @FXML protected void btDeleteClick() {
+    @FXML
+    protected void btDeleteClick() {
         Integer selectedId = (Integer) cb1.getValue();
         if (selectedId != null) {
             try (Session session = factory.openSession()) {
@@ -357,6 +408,59 @@ public class Controller {
         }
     }
 
-    @FXML protected void menuCreateClickRest(){}
+    @FXML
+    protected void menuReadClickRest() {
+        RestClient restClient = new RestClient();
+        try {
+            String ID = "3399";
+            String responseData = restClient.GET(ID);
+
+            if (responseData != null) {
+                // Konvertálás JSON adatokat tartalmazó Stringből User listává
+                List<User> userDataList = convertJsonToUserList(responseData);
+
+                // Létrehoz egy ObservableList-et a TableView számára
+                ObservableList<User> userList = FXCollections.observableArrayList(userDataList);
+
+                // Beállítja a TableView adatforrását az ObservableList-re
+                tvRest.setItems(userList);
+            } else {
+                // Ha nincs válaszadat, kezeljük le a hibát
+                System.out.println("Nincs válaszadat.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private List<User> convertJsonToUserList(String jsonData) {
+        List<User> users = new ArrayList<>();
+        try {
+            JSONArray jsonArray = new JSONArray(jsonData);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonUser = jsonArray.getJSONObject(i);
+
+                // JSON mezők kiolvasása
+                int id = jsonUser.getInt("id");
+                String name = jsonUser.getString("name");
+                String email = jsonUser.getString("email");
+                String gender = jsonUser.getString("gender");
+                String status = jsonUser.getString("status");
+
+                // User objektum létrehozása és hozzáadása a listához
+                User user = new User(String.valueOf(id), name, email, gender, status);
+                users.add(user);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            // Kezelheted a kivételt
+        }
+        return users;
+    }
+
+
+
 
 }

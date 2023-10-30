@@ -11,7 +11,7 @@ public class RestClient {
     static HttpsURLConnection connection;
     static String token = "1db5e41713588809f524d82fc1713cb66e45c47dcb63e42b35e85c48f54202bb";
 
-    public static void GET(String ID) throws IOException {  // Get a list of users
+    public static String GET(String ID) throws IOException {  // Get a list of users
         System.out.println("\nGET...");
         String url = "https://gorest.co.in/public/v1/users";
         if(ID!=null)
@@ -21,26 +21,28 @@ public class RestClient {
         connection.setRequestMethod("GET");  // Set request method
         if(ID!=null)
             connection.setRequestProperty("Authorization", "Bearer " + token);
-        segéd3(HttpsURLConnection.HTTP_OK);
+        return segéd3(HttpsURLConnection.HTTP_OK);
     }
 
 
-    static void segéd3(int code) throws IOException {
+    static String segéd3(int code) throws IOException {
         int statusCode = connection.getResponseCode();   // Getting response code
-        System.out.println("statusCode: "+statusCode);
+        System.out.println("statusCode: " + statusCode);
         if (statusCode == code) {     // If responseCode is code, data fetch successful
-            // Kiolvassa a válasz adatait:
+            // Read the response data:
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuffer jsonResponseData = new StringBuffer();
-            String readLine = null;
-            while ((readLine = in.readLine()) != null)   // Append response line by line
+            StringBuilder jsonResponseData = new StringBuilder();
+            String readLine;
+            while ((readLine = in.readLine()) != null) {   // Append response line by line
                 jsonResponseData.append(readLine);
+            }
             in.close();
-            System.out.println("List of users: " + jsonResponseData.toString());    // Print result in string format
+            connection.disconnect();
+            return jsonResponseData.toString(); // Return the JSON data
         } else {
-            System.out.println("Hiba!!!");
+            connection.disconnect();
+            return null; // Return null if the request was not successful
         }
-        connection.disconnect();
     }
 
     public static void POST(String name, String gender, String email, String status) throws IOException {
