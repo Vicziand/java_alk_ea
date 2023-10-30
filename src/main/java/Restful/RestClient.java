@@ -11,7 +11,7 @@ public class RestClient {
     static HttpsURLConnection connection;
     static String token = "1db5e41713588809f524d82fc1713cb66e45c47dcb63e42b35e85c48f54202bb";
 
-    static void GET(String ID) throws IOException {  // Get a list of users
+    public static void GET(String ID) throws IOException {  // Get a list of users
         System.out.println("\nGET...");
         String url = "https://gorest.co.in/public/v1/users";
         if(ID!=null)
@@ -43,7 +43,7 @@ public class RestClient {
         connection.disconnect();
     }
 
-    static void POST(String name, String gender, String email, String status) throws IOException {
+    public static void POST(String name, String gender, String email, String status) throws IOException {
         System.out.println("\nPOST...");
         URL postUrl = new URL("https://gorest.co.in/public/v1/users");  // Url for making POST request
         connection = (HttpsURLConnection) postUrl.openConnection();
@@ -70,7 +70,7 @@ public class RestClient {
         connection.connect();
     }
 
-    static void PUT(String ID, String name, String gender, String email, String status) throws IOException {
+    public static void PUT(String ID, String name, String gender, String email, String status) throws IOException {
         System.out.println("\nPUT...");
         String url = "https://gorest.co.in/public/v1/users"+"/"+ID;
         URL postUrl = new URL(url);  // Url for making PUT request
@@ -82,7 +82,7 @@ public class RestClient {
         segéd3(HttpsURLConnection.HTTP_OK);
     }
 
-    static void DELETE(String ID) throws IOException {
+    public static void DELETE(String ID) throws IOException {
         System.out.println("\nDELETE...");
         String url = "https://gorest.co.in/public/v1/users"+"/"+ID;
         URL postUrl = new URL(url);  // Url for making PUT request
@@ -92,25 +92,6 @@ public class RestClient {
         segéd3(HttpsURLConnection.HTTP_NO_CONTENT);
     }
 
-
-    public static void main(String[] args) {
-
-        try {
-            GET(null);
-            // Emailnek egyedinek kell lenni!!!
-            POST("Horváth János", "male", "email21@data.hu","active");
-            String ID="3399";
-            GET(ID);
-            PUT(ID,"Horváth János2", "male", "email3@data.hu","active");
-            GET(ID);
-            DELETE(ID);
-            GET(ID);
-            GET(null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 
 
 }

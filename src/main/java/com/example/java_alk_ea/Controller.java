@@ -122,6 +122,8 @@ public class Controller {
         gp1.setManaged(false);
         gpUpdate.setVisible(false);
         gpUpdate.setManaged(false);
+        btDelete.setVisible(false);
+        btUpdate.setVisible(false);
 
     }
 
@@ -137,6 +139,7 @@ public class Controller {
         btCreate.setVisible(true);
         btCreate.setManaged(true);
         btUpdate.setVisible(false);
+        btDelete.setVisible(false);
 
     }
 
@@ -205,12 +208,14 @@ public class Controller {
         gp1.setManaged(false);
         btCreate.setVisible(false);
         initializeCbWithIds();
+        btUpdate.setVisible(true);
+        btUpdate.setManaged(true);
+        btDelete.setVisible(false);
+        btDelete.setManaged(false);
     }
 
 
     public void initializeCbWithIds() {
-        btUpdate.setVisible(false);
-        btUpdate.setManaged(false);
         Transaction t = null;
         if (factory != null) {
             try (Session session = factory.openSession()) {
@@ -232,8 +237,6 @@ public class Controller {
     public void handleComboBoxSelection() {
         gp1.setVisible(true);
         gp1.setManaged(true);
-        btUpdate.setVisible(true);
-        btUpdate.setManaged(true);
         btCreate.setVisible(false);
         btCreate.setManaged(false);
         gpUpdate.setVisible(false);
@@ -323,10 +326,14 @@ public class Controller {
     @FXML protected void menuDeleteClick() {
         gpUpdate.setVisible(true);
         gpUpdate.setManaged(true);
+        btUpdate.setVisible(false);
+        gp1.setVisible(false);
+        gp1.setManaged(false);
         tv1.setVisible(false);
         tv1.setManaged(false);
         initializeCbWithIds();
-
+        btDelete.setVisible(true);
+        btDelete.setManaged(true);
 
     }
 
