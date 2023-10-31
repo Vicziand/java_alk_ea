@@ -34,9 +34,14 @@
                     <MenuItem text="Delete" onAction="#menuDeleteClick"/>
                 </items>
             </Menu>
-            <Menu text="Rest1">
+            <Menu text="Rest1" >
                 <items>
                     <MenuItem text ="Read" onAction="#menuReadClickRest"/>
+                </items>
+            </Menu>
+            <Menu text="Adatbányászat">
+                <items>
+                    <MenuItem text ="Döntési fa" onAction="#menuDecisionTree"/>
                 </items>
             </Menu>
         </menus>
@@ -80,7 +85,7 @@
     <Button fx:id="btUpdate" onAction="#btUpdateClick" GridPane.rowIndex="3" GridPane.columnIndex="1">Módosít</Button>
     <Button fx:id="btDelete" onAction="#btDeleteClick" GridPane.rowIndex="3" GridPane.columnIndex="1">Töröl</Button>
 
-    <TableView fx:id="tvRest" >
+    <TableView fx:id="tvRest" managed="false">
     </TableView>
 
 </VBox>

@@ -1,5 +1,6 @@
 package com.example.java_alk_ea;
 
+import DataMining.MachineLearn;
 import Grafikus.Gep;
 import Grafikus.GepCreate;
 import Grafikus.Oprendszer;
@@ -462,5 +463,24 @@ public class Controller {
 
 
 
+    // 4. Feladat Adatbányászat
+    @FXML
+    protected void menuDecisionTree() {
+        gp1.setVisible(false);
+        lb1.setVisible(false);
+        gpUpdate.setVisible(false);
+        String file = "src/main/java/DataMining/ionosphere.arff";
+        int classIndex=34;	// 34. oszlopot kell előre jelezni
+        new MachineLearn(file, classIndex);
 
+        showAlert("Az adatok sikeresen kiírva a Döntési fa.txt fájlba!");
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Sikeres kiíratás");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

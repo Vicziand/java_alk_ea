@@ -6,6 +6,7 @@ module com.example.java_alk_ea {
     requires java.sql;
     requires org.hibernate.orm.core;
     requires org.json;
+    requires weka.stable;
     opens Grafikus;
     exports Grafikus;
     opens com.example.java_alk_ea to javafx.fxml;

@@ -1,5 +1,6 @@
 package com.example.java_alk_ea;
 
+import DataMining.MachineLearn;
 import Restful.RestClient;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -58,6 +59,11 @@ public class MainApplication extends Application {
        // } catch (IOException e) {
         //    e.printStackTrace();
         //}
+
+       /* String file = "src/main/java/DataMining/ionosphere.arff";
+        int classIndex=34;	// 34. oszlopot kell előre jelezni
+        new MachineLearn(file, classIndex);
+        */
 
         launch(args);
         }

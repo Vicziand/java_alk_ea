@@ -63,6 +63,15 @@
             <version>20210307</version> <!-- A verziószám a frissített verziószámra utalhat -->
         </dependency>
 
+        <!-- Függőség a Weka adatbányász szoftverhez -->
+            <dependency>
+                <groupId>nz.ac.waikato.cms.weka</groupId>
+                <artifactId>weka-stable</artifactId>
+                <version>3.8.0</version>
+            </dependency>
+
+
+
     </dependencies>
 
     <build>
