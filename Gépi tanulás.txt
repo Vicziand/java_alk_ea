@@ -1,0 +1,95 @@
+
+classifier.getClass():class weka.classifiers.trees.J48
+TP=33, TN=0, FP=0, FN=2
+TP+TN=33
+FP+FN=2
+
+Results
+Correctly Classified Instances         321               91.453  %
+Incorrectly Classified Instances        30                8.547  %
+Kappa statistic                          0.8096
+Mean absolute error                      0.0938
+Root mean squared error                  0.2901
+Relative absolute error                 20.36   %
+Root relative squared error             60.4599 %
+Total Number of Instances              351     
+
+Correctly Classified Instances:321	91.45299145299145%
+Incorrectly Classified Instances:30
+
+
+classifier.getClass():class weka.classifiers.functions.SMO
+TP=34, TN=0, FP=0, FN=1
+TP+TN=34
+FP+FN=1
+
+Results
+Correctly Classified Instances         311               88.604  %
+Incorrectly Classified Instances        40               11.396  %
+Kappa statistic                          0.7406
+Mean absolute error                      0.114 
+Root mean squared error                  0.3376
+Relative absolute error                 24.7463 %
+Root relative squared error             70.3666 %
+Total Number of Instances              351     
+
+Correctly Classified Instances:311	88.6039886039886%
+Incorrectly Classified Instances:40
+
+
+classifier.getClass():class weka.classifiers.bayes.NaiveBayes
+TP=26, TN=0, FP=0, FN=9
+TP+TN=26
+FP+FN=9
+
+Results
+Correctly Classified Instances         290               82.6211 %
+Incorrectly Classified Instances        61               17.3789 %
+Kappa statistic                          0.6394
+Mean absolute error                      0.1736
+Root mean squared error                  0.3935
+Relative absolute error                 37.7001 %
+Root relative squared error             82.0203 %
+Total Number of Instances              351     
+
+Correctly Classified Instances:290	82.62108262108262%
+Incorrectly Classified Instances:61
+
+
+classifier.getClass():class weka.classifiers.lazy.IBk
+TP=34, TN=0, FP=0, FN=1
+TP+TN=34
+FP+FN=1
+
+Results
+Correctly Classified Instances         298               84.9003 %
+Incorrectly Classified Instances        53               15.0997 %
+Kappa statistic                          0.6453
+Mean absolute error                      0.184 
+Root mean squared error                  0.3546
+Relative absolute error                 39.9469 %
+Root relative squared error             73.9142 %
+Total Number of Instances              351     
+
+Correctly Classified Instances:298	84.9002849002849%
+Incorrectly Classified Instances:53
+
+
+classifier.getClass():class weka.classifiers.trees.RandomForest
+TP=34, TN=0, FP=0, FN=1
+TP+TN=34
+FP+FN=1
+
+Results
+Correctly Classified Instances         326               92.8775 %
+Incorrectly Classified Instances        25                7.1225 %
+Kappa statistic                          0.8428
+Mean absolute error                      0.1287
+Root mean squared error                  0.2255
+Relative absolute error                 27.951  %
+Root relative squared error             47.0057 %
+Total Number of Instances              351     
+
+Correctly Classified Instances:326	92.87749287749288%
+Incorrectly Classified Instances:25
+

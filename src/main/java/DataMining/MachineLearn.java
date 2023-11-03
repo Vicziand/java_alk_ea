@@ -11,28 +11,28 @@ public class MachineLearn {
        try {
            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
            Instances instances = new Instances(bufferedReader);
-           System.out.println("instances.size():" + instances.size());
+           //System.out.println("instances.size():" + instances.size());
            instances.setClassIndex(classIndex);
            Instances tanito, kiertekelo;
            J48 classifier;
            Evaluation evaluation;
            classifier = new J48();
-           System.out.println("\nMachineLearn: Randomize után vagy anélkül: tanító: első 90%, kiértékelő: utolsó 10%");
+           //System.out.println("\nMachineLearn: Randomize után vagy anélkül: tanító: első 90%, kiértékelő: utolsó 10%");
            if(false) instances.randomize(new Random());
            tanito = new Instances(instances,0,9*instances.size()/10);
-           System.out.println("tanító.size():"+tanito.size());
+           //System.out.println("tanító.size():"+tanito.size());
            kiertekelo = new Instances(instances,9*instances.size()/10,instances.size()/10);
-           System.out.println("kiértékelő.size():"+kiertekelo.size());
+           //System.out.println("kiértékelő.size():"+kiertekelo.size());
            classifier.buildClassifier(tanito);
            evaluation = new Evaluation(kiertekelo);
            double[] eredmeny = evaluation.evaluateModel(classifier, kiertekelo);
 
-           System.out.println(evaluation.toSummaryString("\nResults", false));
-           System.out.println("Correctly Classified Instances:"+(int)evaluation.correct());
-           System.out.println("Incorrectly Classified Instances:"+(kiertekelo.size()-(int)evaluation.correct()));
-           System.out.println(classifier.toString());
+          // System.out.println(evaluation.toSummaryString("\nResults", false));
+           //System.out.println("Correctly Classified Instances:"+(int)evaluation.correct());
+           //System.out.println("Incorrectly Classified Instances:"+(kiertekelo.size()-(int)evaluation.correct()));
+           //System.out.println(classifier.toString());
 
-           System.out.println("\nMachineLearn: Vizsgálat részletesen, egyesével:");
+           //System.out.println("\nMachineLearn: Vizsgálat részletesen, egyesével:");
           int TP=0, TN=0, FP=0, FN=0;
 
            //  TP:TtruePositive, TN:TrueNegative, FP:FalsePositive, FN:FalseNegative
@@ -48,9 +48,9 @@ public class MachineLearn {
                    TN++;
            }
 
-           System.out.println("TP="+TP+", "+"TN="+TN+", "+"FP="+FP+", "+"FN="+FN);
-           System.out.println("TP+TN="+(TP+TN));
-           System.out.println("FP+FN="+(FP+FN));
+           //System.out.println("TP="+TP+", "+"TN="+TN+", "+"FP="+FP+", "+"FN="+FN);
+           //System.out.println("TP+TN="+(TP+TN));
+           //System.out.println("FP+FN="+(FP+FN));
 
            PrintWriter kiir = new PrintWriter("Döntési fa.txt");
            kiir.println("tanító.size() :"+tanito.size());

@@ -1,5 +1,7 @@
 package com.example.java_alk_ea;
 
+import DataMining.Algs;
+import DataMining.CrossValidation;
 import DataMining.MachineLearn;
 import Grafikus.Gep;
 import Grafikus.GepCreate;
@@ -16,11 +18,15 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.lang.module.Configuration;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,25 +34,34 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.SMO;
+import weka.classifiers.lazy.IBk;
+import weka.classifiers.trees.J48;
+import weka.classifiers.trees.RandomForest;
+import weka.core.Utils;
 
 public class Controller {
 
     @FXML
-    private Label lb1, lb2;
+    private Label lb1, lb2,lb3;
     @FXML
-    private GridPane gp1;
+    private GridPane gp1,gpAlg;
     @FXML
     private TextField tfGyarto, tfTipus, tfKijelzo, tfMemoria, tfMerevlemez, tfVideovezerlo, tfAr, tfProcesszorgyarto, tfProcesszortipus, tfOprendszernev, tfDb;
     @FXML
     private GridPane gpUpdate;
     @FXML
-    private ComboBox cb1;
+    private ComboBox cb1,cb2;
     @FXML
     private Button btUpdate, btCreate, btDelete;
-
+    @FXML
+    private VBox vbDatabase,vbDataMining,vbRest1;
 
     @FXML
     private TableView tv1;
@@ -125,6 +140,9 @@ public class Controller {
         try (Session session = factory.openSession()) {
             Transaction t = session.beginTransaction();
             ElemekTörlése();
+            vbDatabase.setVisible(true);
+            vbRest1.setVisible(false);
+            vbDataMining.setVisible(false);
             tv1.setVisible(true);
             tv1.setManaged(true);
             tv1.getColumns().removeAll(tv1.getColumns());
@@ -177,6 +195,9 @@ public class Controller {
     @FXML
     protected void menuCreateClick() {
         ElemekTörlése();
+        vbDatabase.setVisible(true);
+        vbRest1.setVisible(false);
+        vbDataMining.setVisible(false);
         gp1.setVisible(true);
         gp1.setManaged(true);
         gpUpdate.setVisible(false);
@@ -248,6 +269,9 @@ public class Controller {
 
     @FXML
     protected void menuUpdateClick() {
+        vbDatabase.setVisible(true);
+        vbRest1.setVisible(false);
+        vbDataMining.setVisible(false);
         gpUpdate.setVisible(true);
         gpUpdate.setManaged(true);
         ElemekTörlése();
@@ -409,6 +433,7 @@ public class Controller {
         }
     }
 
+    // 2. feladat Rest
     @FXML
     protected void menuReadClickRest() {
         RestClient restClient = new RestClient();
@@ -466,9 +491,11 @@ public class Controller {
     // 4. Feladat Adatbányászat
     @FXML
     protected void menuDecisionTree() {
-        gp1.setVisible(false);
-        lb1.setVisible(false);
-        gpUpdate.setVisible(false);
+        vbDatabase.setVisible(false);
+        vbRest1.setVisible(false);
+        vbDataMining.setVisible(true);
+        gpAlg.setVisible(false);
+        gpAlg.setManaged(false);
         String file = "src/main/java/DataMining/ionosphere.arff";
         int classIndex=34;	// 34. oszlopot kell előre jelezni
         new MachineLearn(file, classIndex);
@@ -482,6 +509,103 @@ public class Controller {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void menuAlgorithms() throws FileNotFoundException {
+        vbDatabase.setVisible(false);
+        vbRest1.setVisible(false);
+        vbDataMining.setVisible(true);
+        gpAlg.setVisible(false);
+        gpAlg.setManaged(false);
+        PrintWriter kiir;
+        List<String> algorithms = new ArrayList<>();
+        List<Integer> correct = new ArrayList<>();
+        try {
+            kiir = new PrintWriter("Gépi tanulás.txt");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        String file = "src/main/java/DataMining/ionosphere.arff";
+        int classIndex = 34;    // 34. oszlopot kell előre jelezni
+        new MachineLearn(file, classIndex);
+        CrossValidation j48 = new CrossValidation(file, classIndex, new J48(), kiir);
+        algorithms.add(j48.getAlgorithm());
+        correct.add(j48.getCorrect());
+
+        CrossValidation sm0 = new CrossValidation(file, classIndex, new SMO(),kiir);
+        algorithms.add(sm0.getAlgorithm());
+        correct.add(sm0.getCorrect());
+
+        CrossValidation naiveBayes = new CrossValidation(file, classIndex, new NaiveBayes(),kiir);
+        algorithms.add(naiveBayes.getAlgorithm());
+        correct.add(naiveBayes.getCorrect());
+
+        IBk classifier = new IBk();
+// 10 legközelebbi szomszéd:
+        try {
+            classifier.setOptions(Utils.splitOptions("-K 10"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        CrossValidation ibk = new CrossValidation(file, classIndex, classifier,kiir);
+        algorithms.add(ibk.getAlgorithm());
+        correct.add(ibk.getCorrect());
+
+        CrossValidation randomForest = new CrossValidation(file, classIndex, new RandomForest(),kiir);
+        algorithms.add(randomForest.getAlgorithm());
+        correct.add(randomForest.getCorrect());
+
+        kiir.close();
+
+        int maxCorrect = 0;
+        for (int i = 0; i < algorithms.size(); i++){
+            if(correct.get(maxCorrect) < correct.get(i)){
+                maxCorrect = i;
+            }
+        }
+
+        showAlert("A legjobb Correctly Classified Instances eredményű algoritmus: "+algorithms.get(maxCorrect));
+
+    }
+
+    @FXML
+    private void menuAlgorithms2(){
+        vbDatabase.setVisible(false);
+        vbDatabase.setManaged(false);
+        vbRest1.setVisible(false);
+        vbRest1.setManaged(false);
+        vbDataMining.setVisible(true);
+        String file = "src/main/java/DataMining/ionosphere.arff";
+        int classIndex = 34;    // 34. oszlopot kell előre jelezni
+        new MachineLearn(file, classIndex);
+
+        cb2.getItems().clear();
+        List<Algs> algorithms = new ArrayList<>();
+        Algs j48 = new Algs(file, classIndex, new J48());
+        algorithms.add(j48);
+        Algs sm0 = new Algs(file, classIndex, new SMO());
+        algorithms.add(sm0);
+        Algs naiveBayes = new Algs(file, classIndex, new NaiveBayes());
+        algorithms.add(naiveBayes);
+        Algs ibk = new Algs(file, classIndex, new IBk());
+        algorithms.add(ibk);
+        Algs randomForest = new Algs(file, classIndex, new RandomForest());
+        algorithms.add(randomForest);
+
+        cb2.getItems().addAll(algorithms);
+    }
+
+    @FXML
+    private void handleComboBoxSelection2(){
+        Algs selectedAlgs = (Algs) cb2.getValue();
+
+        if (selectedAlgs != null) {
+            String message = String.format("TP: %s TN: %s FP: %s FN: %s \nCorrectly Classified Instances: %s \nIncorrectly Classified Instances: %s",
+                    selectedAlgs.getTp(), selectedAlgs.getTn(), selectedAlgs.getFp(), selectedAlgs.getFn(), selectedAlgs.getCorrect(),selectedAlgs.getIncorrect());
+
+            showAlert(message);
+        }
     }
 
 }

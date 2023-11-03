@@ -14,10 +14,10 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
-
 <?import javafx.scene.control.ComboBox?>
-<VBox spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.java_alk_ea.Controller">
+
+<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.java_alk_ea.Controller">
+<VBox spacing="20.0" xmlns:fx="http://javafx.com/fxml">
     <MenuBar fx:id="menuBar">
         <menus>
             <Menu text="Adatbázis">
@@ -43,9 +43,16 @@
                 <items>
                     <MenuItem text ="Döntési fa" onAction="#menuDecisionTree"/>
                 </items>
+                <items>
+                    <MenuItem text ="Több algoritmus" onAction="#menuAlgorithms"/>
+                </items>
+                <items>
+                    <MenuItem text ="Több algoritmus 2" onAction="#menuAlgorithms2"/>
+                </items>
             </Menu>
         </menus>
     </MenuBar>
+    <VBox spacing="20.0" fx:id="vbDatabase">
     <Label fx:id="lb1">Notebook adatbázis</Label>
     <GridPane fx:id="gp1" hgap="2" vgap="4">
         <Label GridPane.rowIndex="0" GridPane.columnIndex="0">Gyártó:</Label>
@@ -85,7 +92,21 @@
     <Button fx:id="btUpdate" onAction="#btUpdateClick" GridPane.rowIndex="3" GridPane.columnIndex="1">Módosít</Button>
     <Button fx:id="btDelete" onAction="#btDeleteClick" GridPane.rowIndex="3" GridPane.columnIndex="1">Töröl</Button>
 
-    <TableView fx:id="tvRest" managed="false">
+</VBox>
+
+<VBox spacing="20.0" fx:id="vbRest1">
+    <TableView fx:id="tvRest" managed="false" visible="false">
     </TableView>
+</VBox>
+
+    <VBox spacing="20.0" fx:id="vbDataMining" alignment="CENTER">
+    <GridPane fx:id="gpAlg" hgap="2" vgap="4">
+        <Label fx:id="lb3">Kérem válassza ki az algoritmust!</Label>
+        <ComboBox fx:id="cb2" GridPane.rowIndex="2" GridPane.columnIndex="1" onAction="#handleComboBoxSelection2"/>
+    </GridPane>
+    </VBox>
+
+
 
 </VBox>
+</GridPane>

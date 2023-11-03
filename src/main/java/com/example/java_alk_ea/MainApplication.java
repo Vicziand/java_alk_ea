@@ -68,21 +68,7 @@ public class MainApplication extends Application {
         //    e.printStackTrace();
         //}
 
-       String file = "src/main/java/DataMining/ionosphere.arff";
-        int classIndex=34;	// 34. oszlopot kell előre jelezni
-        new MachineLearn(file, classIndex);
-        new CrossValidation(file, classIndex, new J48());
-        new CrossValidation(file, classIndex, new SMO());
-        new CrossValidation(file, classIndex, new NaiveBayes());
-        IBk classifier = new IBk();
-// 10 legközelebbi szomszéd:
-        try {
-            classifier.setOptions(Utils.splitOptions("-K 10"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        new CrossValidation(file, classIndex, classifier);
-        new CrossValidation(file, classIndex, new RandomForest());
+
 
 
         launch(args);
