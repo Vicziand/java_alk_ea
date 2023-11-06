@@ -16,6 +16,10 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.ComboBox?>
 
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.RadioButton?>
 <GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.java_alk_ea.Controller">
 <VBox spacing="20.0" xmlns:fx="http://javafx.com/fxml">
     <MenuBar fx:id="menuBar">
@@ -26,6 +30,9 @@
                 </items>
                 <items>
                     <MenuItem text="Read" onAction="#menuReadClick"/>
+                </items>
+                <items>
+                    <MenuItem text="Read2" onAction="#menuRead2Click"/>
                 </items>
                 <items>
                     <MenuItem text="Update" onAction="#menuUpdateClick"/>
@@ -91,6 +98,28 @@
 
     <Button fx:id="btUpdate" onAction="#btUpdateClick" GridPane.rowIndex="3" GridPane.columnIndex="1">Módosít</Button>
     <Button fx:id="btDelete" onAction="#btDeleteClick" GridPane.rowIndex="3" GridPane.columnIndex="1">Töröl</Button>
+
+        <GridPane fx:id="gpRead2" hgap="8.0" vgap="8.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="29.0" minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <CheckBox fx:id="chbRead2a" mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="3" />
+                <CheckBox fx:id="chbRead2b" mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                <CheckBox fx:id="chbRead2c" mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                <RadioButton mnemonicParsing="false" text="RadioButton" GridPane.columnIndex="2" />
+                <TextField fx:id="tfRead2" GridPane.columnIndex="1" />
+                <ComboBox fx:id="cbRead2" prefWidth="150.0" />
+            </children>
+        </GridPane>
 
 </VBox>
 

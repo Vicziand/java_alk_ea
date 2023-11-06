@@ -53,15 +53,16 @@ public class Controller {
     @FXML
     private GridPane gp1,gpAlg;
     @FXML
-    private TextField tfGyarto, tfTipus, tfKijelzo, tfMemoria, tfMerevlemez, tfVideovezerlo, tfAr, tfProcesszorgyarto, tfProcesszortipus, tfOprendszernev, tfDb;
+    private TextField tfGyarto, tfTipus, tfKijelzo, tfMemoria, tfMerevlemez, tfVideovezerlo, tfAr, tfProcesszorgyarto, tfProcesszortipus, tfOprendszernev, tfDb,tfRead2;
     @FXML
-    private GridPane gpUpdate;
+    private GridPane gpUpdate,gpRead2;
     @FXML
     private ComboBox cb1,cb2;
     @FXML
     private Button btUpdate, btCreate, btDelete;
     @FXML
     private VBox vbDatabase,vbDataMining,vbRest1;
+
 
     @FXML
     private TableView tv1;
@@ -133,6 +134,41 @@ public class Controller {
         tfDb.clear();
     }
 
+    @FXML
+    protected void Read() {
+        tv1.setVisible(true);
+        tv1.setManaged(true);
+        IDCol = new TableColumn("Id");
+        gyartoCol = new TableColumn("Gyártó");
+        tipusCol = new TableColumn("Típus");
+        kijelzoCol = new TableColumn("Kijelző");
+        memoriaCol = new TableColumn("Memória");
+        merevlemezCol = new TableColumn("Merevlemez");
+        videovezerloCol = new TableColumn("Videóvezérlő");
+        arCol = new TableColumn("Ár");
+        processzorgyartoCol = new TableColumn("Processzor gyártó");
+        processzortipusCol = new TableColumn("Processzor típus");
+        oprendszernevCol = new TableColumn("Op. rendszer név");
+        dbCol = new TableColumn("Darab");
+
+        tv1.getColumns().addAll(IDCol, gyartoCol, tipusCol, kijelzoCol, memoriaCol, merevlemezCol, videovezerloCol, arCol, processzorgyartoCol, processzortipusCol, oprendszernevCol, dbCol);
+        IDCol.setCellValueFactory(new PropertyValueFactory<>("Id"));
+        gyartoCol.setCellValueFactory(new PropertyValueFactory<>("Gyarto"));
+        tipusCol.setCellValueFactory(new PropertyValueFactory<>("Tipus"));
+        kijelzoCol.setCellValueFactory(new PropertyValueFactory<>("Kijelzo"));
+        memoriaCol.setCellValueFactory(new PropertyValueFactory<>("Memoria"));
+        merevlemezCol.setCellValueFactory(new PropertyValueFactory<>("Merevlemez"));
+        videovezerloCol.setCellValueFactory(new PropertyValueFactory<>("Videovezerlo"));
+        arCol.setCellValueFactory(new PropertyValueFactory<>("Ar"));
+        processzorgyartoCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProcesszor().getGyarto()));
+        processzortipusCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProcesszor().getTipus()));
+        oprendszernevCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOprendszer().getNev()));
+        dbCol.setCellValueFactory(new PropertyValueFactory<>("Db"));
+
+        tv1.getItems().clear();
+
+    }
+
 
     //A menuReadClick metódus megjeleníti az adatokat a TableView-ben, és újra előkészíti a TableView oszlopait a friss adatok megjelenítésére.
     @FXML
@@ -140,40 +176,9 @@ public class Controller {
         try (Session session = factory.openSession()) {
             Transaction t = session.beginTransaction();
             ElemekTörlése();
-            vbDatabase.setVisible(true);
-            vbRest1.setVisible(false);
-            vbDataMining.setVisible(false);
-            tv1.setVisible(true);
-            tv1.setManaged(true);
-            tv1.getColumns().removeAll(tv1.getColumns());
-            IDCol = new TableColumn("Id");
-            gyartoCol = new TableColumn("Gyártó");
-            tipusCol = new TableColumn("Típus");
-            kijelzoCol = new TableColumn("Kijelző");
-            memoriaCol = new TableColumn("Memória");
-            merevlemezCol = new TableColumn("Merevlemez");
-            videovezerloCol = new TableColumn("Videóvezérlő");
-            arCol = new TableColumn("Ár");
-            processzorgyartoCol = new TableColumn("Processzor gyártó");
-            processzortipusCol = new TableColumn("Processzor típus");
-            oprendszernevCol = new TableColumn("Op. rendszer név");
-            dbCol = new TableColumn("Darab");
 
-            tv1.getColumns().addAll(IDCol, gyartoCol, tipusCol, kijelzoCol, memoriaCol, merevlemezCol, videovezerloCol, arCol, processzorgyartoCol, processzortipusCol, oprendszernevCol, dbCol);
-            IDCol.setCellValueFactory(new PropertyValueFactory<>("Id"));
-            gyartoCol.setCellValueFactory(new PropertyValueFactory<>("Gyarto"));
-            tipusCol.setCellValueFactory(new PropertyValueFactory<>("Tipus"));
-            kijelzoCol.setCellValueFactory(new PropertyValueFactory<>("Kijelzo"));
-            memoriaCol.setCellValueFactory(new PropertyValueFactory<>("Memoria"));
-            merevlemezCol.setCellValueFactory(new PropertyValueFactory<>("Merevlemez"));
-            videovezerloCol.setCellValueFactory(new PropertyValueFactory<>("Videovezerlo"));
-            arCol.setCellValueFactory(new PropertyValueFactory<>("Ar"));
-            processzorgyartoCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProcesszor().getGyarto()));
-            processzortipusCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProcesszor().getTipus()));
-            oprendszernevCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOprendszer().getNev()));
-            dbCol.setCellValueFactory(new PropertyValueFactory<>("Db"));
+            Read();
 
-            tv1.getItems().clear();
 
             List<Gep> lista = session.createQuery("FROM Gep").list();
             tv1.getItems().setAll(lista);
@@ -432,6 +437,53 @@ public class Controller {
             }
         }
     }
+
+    @FXML protected void menuRead2Click(){
+        vbRest1.setVisible(false);
+        vbRest1.setManaged(false);
+        vbDataMining.setVisible(false);
+        vbDatabase.setManaged(false);
+        gpUpdate.setVisible(false);
+        gpUpdate.setManaged(false);
+        btDelete.setManaged(false);
+        btDelete.setVisible(false);
+        btUpdate.setVisible(false);
+        btUpdate.setManaged(false);
+        gp1.setVisible(false);
+        gp1.setManaged(false);
+        tv1.setVisible(false);
+        tv1.setManaged(false);
+        gpRead2.setVisible(true);
+        gpRead2.setManaged(true);
+
+
+        try (Session session = factory.openSession()) {
+            Transaction t = session.beginTransaction();
+            ElemekTörlése();
+
+            Read(); // TableView inicializálása
+
+            String gyartoValue = tfRead2.getText();
+            if (!gyartoValue.isEmpty()) {
+                Query<Gep> query = session.createQuery("FROM Gep WHERE Gyarto = :gyarto", Gep.class);
+                query.setParameter("gyarto", gyartoValue);
+
+                List<Gep> lista = query.list();
+                tv1.getItems().setAll(lista);
+                System.out.println(gyartoValue);
+            }
+            else{
+                System.out.println("Üres");
+            }
+            t.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 
     // 2. feladat Rest
     @FXML
