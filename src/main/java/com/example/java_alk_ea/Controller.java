@@ -63,8 +63,7 @@ public class Controller {
     @FXML
     private VBox vbDatabase,vbDataMining,vbRest1;
 
-//dsadasds
-    
+
     @FXML
     private TableView tv1;
     @FXML
