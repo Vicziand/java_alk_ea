@@ -628,6 +628,7 @@ public class Controller {
         vbRest1.setVisible(false);
         vbRest1.setManaged(false);
         vbDataMining.setVisible(true);
+        vbDataMining.setManaged(true);
         String file = "src/main/java/DataMining/ionosphere.arff";
         int classIndex = 34;    // 34. oszlopot kell előre jelezni
         new MachineLearn(file, classIndex);
