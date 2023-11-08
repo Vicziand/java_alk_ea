@@ -7,14 +7,10 @@ import Grafikus.Gep;
 import Grafikus.GepCreate;
 import Grafikus.Oprendszer;
 import Grafikus.Processzor;
-import Restful.RestClient;
-import Restful.User;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
@@ -25,26 +21,19 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.lang.module.Configuration;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Utils;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class Controller {
 
@@ -93,24 +82,14 @@ public class Controller {
     private TableColumn<Gep, String> dbCol;
 
     @FXML
-    private TableView<User> tvRest;
-
+    private GridPane gr6,gr7,gr8,gr9;
     @FXML
-    private TableColumn<User, String> colId;
-
+    private  TextField tf6,tf7,tf8,tf9,tf10,tf11,tf12,tf13,tf14,tf15,tf16;
     @FXML
-    private TableColumn<User, String> colName;
+    private TextArea ta1,ta2,ta3,ta4;
 
-    @FXML
-    private TableColumn<User, String> colEmail;
-
-    @FXML
-    private TableColumn<User, String> colGender;
-
-    @FXML
-    private TableColumn<User, String> colStatus;
-
-
+    static String token = "1db5e41713588809f524d82fc1713cb66e45c47dcb63e42b35e85c48f54202bb";
+    HttpsURLConnection httpsURLConnection;
     SessionFactory factory;
 
     // SessionFactory inicializálása az adatbázis műveletekhez
@@ -187,6 +166,10 @@ public class Controller {
             e.printStackTrace();
         }
 
+        vbDataMining.setManaged(false);
+        vbDataMining.setVisible(false);
+        vbRest1.setVisible(false);
+        vbRest1.setManaged(false);
         gp1.setVisible(false);
         gp1.setManaged(false);
         gpUpdate.setVisible(false);
@@ -486,59 +469,196 @@ public class Controller {
 
 
     // 2. feladat Rest
+
+    protected void clearControlUIData(TextField... tfList) {
+        for(TextField tf : tfList) tf.setText("");
+    }
+    protected void segéd1(){
+        httpsURLConnection.setRequestProperty("Content-Type", "application/json");
+        httpsURLConnection.setRequestProperty("Authorization", "Bearer " + token);
+        httpsURLConnection.setUseCaches(false);
+        httpsURLConnection.setDoOutput(true);
+    }
+    protected void segéd2(String params) throws IOException {
+        BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(httpsURLConnection.getOutputStream(), "UTF-8"));
+        wr.write(params);
+        wr.close();
+        httpsURLConnection.connect();
+    }
+    protected String segéd3(int code) throws IOException {
+        int statusCode = httpsURLConnection.getResponseCode();
+        System.out.println("statusCode: "+statusCode);
+        if (statusCode == code) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(httpsURLConnection.getInputStream()));
+            StringBuffer jsonResponseData = new StringBuffer();
+            String readLine = null;
+            while ((readLine = in.readLine()) != null)
+                jsonResponseData.append(readLine);
+            in.close();
+            httpsURLConnection.disconnect();
+            return jsonResponseData.toString();
+        } else {
+            httpsURLConnection.disconnect();
+            return "Hiba!!!";
+        }
+    }
     @FXML
-    protected void menuReadClickRest() {
-        RestClient restClient = new RestClient();
-        try {
-            String ID = "3399";
-            String responseData = restClient.GET(ID);
-
-            if (responseData != null) {
-                // Konvertálás JSON adatokat tartalmazó Stringből User listává
-                List<User> userDataList = convertJsonToUserList(responseData);
-
-                // Létrehoz egy ObservableList-et a TableView számára
-                ObservableList<User> userList = FXCollections.observableArrayList(userDataList);
-
-                // Beállítja a TableView adatforrását az ObservableList-re
-                tvRest.setItems(userList);
-            } else {
-                // Ha nincs válaszadat, kezeljük le a hibát
-                System.out.println("Nincs válaszadat.");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+    protected void rest1MenuCreateClick() {
+        vbRest1.setManaged(true);
+        vbRest1.setVisible(true);
+        ElemekTörlése();
+        clearControlUIData(tf7, tf8, tf9, tf10);
+        ta2.setText("");
+        gr7.setVisible(true);
+        gr7.setManaged(true);
+        gr6.setVisible(false);
+        gr6.setManaged(false);
+        gr8.setVisible(false);
+        gr8.setManaged(false);
+        gr9.setVisible(false);
+        gr9.setManaged(false);
+        vbDatabase.setManaged(false);
+        vbDatabase.setVisible(false);
+        vbDataMining.setVisible(false);
+        vbDataMining.setManaged(false);
     }
-
-    private List<User> convertJsonToUserList(String jsonData) {
-        List<User> users = new ArrayList<>();
-        try {
-            JSONArray jsonArray = new JSONArray(jsonData);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonUser = jsonArray.getJSONObject(i);
-
-                // JSON mezők kiolvasása
-                int id = jsonUser.getInt("id");
-                String name = jsonUser.getString("name");
-                String email = jsonUser.getString("email");
-                String gender = jsonUser.getString("gender");
-                String status = jsonUser.getString("status");
-
-                // User objektum létrehozása és hozzáadása a listához
-                User user = new User(String.valueOf(id), name, email, gender, status);
-                users.add(user);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            // Kezelheted a kivételt
+    @FXML
+    protected void btnRest1MenuCreateClick() throws IOException {
+        ta2.setText("");
+        URL postUrl = new URL("https://gorest.co.in/public/v1/users");
+        httpsURLConnection = (HttpsURLConnection) postUrl.openConnection();
+        httpsURLConnection.setRequestMethod("POST");
+        segéd1();
+        String name = tf7.getText();
+        String gender = tf8.getText();
+        String email = tf9.getText();
+        String status = tf10.getText();
+        String params = "{\"name\":\""+name+"\", \"gender\":\""+gender+"\", \"email\":\""+email+"\", \"status\":\""+status+"\"}";
+        segéd2(params);
+        String response = segéd3(HttpsURLConnection.HTTP_CREATED);
+        if(!response.equals("Hiba!!!")) {
+            ta2.setText(response);
+        } else {
+            ta2.setText("Az új user létrehozása sajnos nem sikerült.");
         }
-        return users;
     }
-
-
+    @FXML
+    protected void rest1MenuReadClick() {
+        vbRest1.setManaged(true);
+        vbRest1.setVisible(true);
+        ElemekTörlése();
+        clearControlUIData(tf6);
+        ta1.setText("");
+        gr6.setVisible(true);
+        gr6.setManaged(true);
+        gr7.setVisible(false);
+        gr7.setManaged(false);
+        gr8.setVisible(false);
+        gr8.setManaged(false);
+        gr9.setVisible(false);
+        gr9.setManaged(false);
+        vbDatabase.setManaged(false);
+        vbDatabase.setVisible(false);
+        vbDataMining.setVisible(false);
+        vbDataMining.setManaged(false);
+    }
+    @FXML
+    protected void btnRest1MenuReadClick() throws IOException {
+        ta1.setText("");
+        String url = "https://gorest.co.in/public/v1/users";
+        String ID = tf6.getText();
+        if(ID != null)
+            url = url + "/" + ID;
+        URL usersUrl = new URL(url);
+        httpsURLConnection = (HttpsURLConnection) usersUrl.openConnection();
+        httpsURLConnection.setRequestMethod("GET");
+        if(ID != null)
+            httpsURLConnection.setRequestProperty("Authorization", "Bearer " + token);
+        String response = segéd3(HttpsURLConnection.HTTP_OK);
+        if(!response.equals("Hiba!!!")) {
+            ta1.setText(response);
+        } else {
+            ta1.setText("Nincs user ilyen ID-val az adatbázisban.");
+        }
+    }
+    @FXML
+    protected void rest1MenuUpdateClick() {
+        ElemekTörlése();
+        clearControlUIData(tf11, tf12, tf13, tf14, tf15);
+        vbRest1.setManaged(true);
+        vbRest1.setVisible(true);
+        ta3.setText("");
+        gr7.setVisible(false);
+        gr7.setManaged(false);
+        gr6.setVisible(false);
+        gr6.setManaged(false);
+        gr9.setVisible(false);
+        gr9.setManaged(false);
+        gr8.setVisible(true);
+        gr8.setManaged(true);
+        vbDatabase.setManaged(false);
+        vbDatabase.setVisible(false);
+        vbDataMining.setVisible(false);
+        vbDataMining.setManaged(false);
+    }
+    @FXML
+    protected void btnRest1MenuUpdateClick() throws IOException {
+        ta3.setText("");
+        String ID = tf11.getText();
+        String name = tf12.getText();
+        String gender = tf13.getText();
+        String email = tf14.getText();
+        String status = tf15.getText();
+        String url = "https://gorest.co.in/public/v1/users"+"/"+ID;
+        URL postUrl = new URL(url);
+        httpsURLConnection = (HttpsURLConnection) postUrl.openConnection();
+        httpsURLConnection.setRequestMethod("PUT");
+        segéd1();
+        String params = "{\"name\":\""+name+"\", \"gender\":\""+gender+"\", \"email\":\""+email+"\", \"status\":\""+status+"\"}";
+        segéd2(params);
+        String response = segéd3(HttpsURLConnection.HTTP_OK);
+        if(!response.equals("Hiba!!!")) {
+            ta3.setText(response);
+        } else {
+            ta3.setText("A user módosítása sajnos nem sikerült.");
+        }
+    }
+    @FXML
+    protected void rest1MenuDeleteClick() {
+        ElemekTörlése();
+        vbRest1.setManaged(true);
+        vbRest1.setVisible(true);
+        clearControlUIData(tf16);
+        ta4.setText("");
+        gr9.setVisible(true);
+        gr9.setManaged(true);
+        gr7.setVisible(false);
+        gr7.setManaged(false);
+        gr6.setVisible(false);
+        gr6.setManaged(false);
+        gr8.setVisible(false);
+        gr8.setManaged(false);
+        vbDatabase.setManaged(false);
+        vbDatabase.setVisible(false);
+        vbDataMining.setVisible(false);
+        vbDataMining.setManaged(false);
+    }
+    @FXML
+    protected void btnRest1MenuDeleteClick() throws IOException {
+        ta4.setText("");
+        String ID = tf16.getText();
+        String url = "https://gorest.co.in/public/v1/users"+"/"+ID;
+        URL postUrl = new URL(url);
+        httpsURLConnection = (HttpsURLConnection) postUrl.openConnection();
+        httpsURLConnection.setRequestMethod("DELETE");
+        segéd1();
+        String response = segéd3(HttpsURLConnection.HTTP_NO_CONTENT);
+        if(!response.equals("Hiba!!!")) {
+            ta4.setText("Sikeresen törölte a user-t!");
+        } else {
+            ta4.setText("A user törlése sajnos nem sikerült.");
+        }
+    }
 
     // 4. Feladat Adatbányászat
     @FXML

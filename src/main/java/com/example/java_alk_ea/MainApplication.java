@@ -1,8 +1,5 @@
 package com.example.java_alk_ea;
 
-import DataMining.CrossValidation;
-import DataMining.MachineLearn;
-import Restful.RestClient;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,13 +10,6 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import weka.classifiers.lazy.IBk;
-import weka.classifiers.trees.RandomForest;
-import weka.core.Utils;
-import weka.classifiers.trees.J48;
-import weka.classifiers.Classifier;
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.functions.SMO;
 
 import java.io.IOException;
 
@@ -52,7 +42,7 @@ public class MainApplication extends Application {
         Metadata metadata = new MetadataSources(standardRegistry).getMetadataBuilder().build();
         factory = metadata.getSessionFactoryBuilder().build();
 
-        RestClient restClient = new RestClient();
+
        // try {
             //restClient.GET(null);
             // Emailnek egyedinek kell lenni!!!
@@ -67,7 +57,6 @@ public class MainApplication extends Application {
        // } catch (IOException e) {
         //    e.printStackTrace();
         //}
-
 
 
 
