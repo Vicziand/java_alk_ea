@@ -152,6 +152,7 @@ public class Controller {
     //A menuReadClick metódus megjeleníti az adatokat a TableView-ben, és újra előkészíti a TableView oszlopait a friss adatok megjelenítésére.
     @FXML
     protected void menuReadClick() {
+
         try (Session session = factory.openSession()) {
             Transaction t = session.beginTransaction();
             ElemekTörlése();
@@ -166,6 +167,7 @@ public class Controller {
             e.printStackTrace();
         }
 
+
         vbDataMining.setManaged(false);
         vbDataMining.setVisible(false);
         vbRest1.setVisible(false);
@@ -176,6 +178,8 @@ public class Controller {
         gpUpdate.setManaged(false);
         btDelete.setVisible(false);
         btUpdate.setVisible(false);
+        gpRead2.setManaged(false);
+        gpRead2.setVisible(false);
 
     }
 
@@ -196,6 +200,8 @@ public class Controller {
         btCreate.setManaged(true);
         btUpdate.setVisible(false);
         btDelete.setVisible(false);
+        gpRead2.setManaged(false);
+        gpRead2.setVisible(false);
 
     }
 
@@ -273,6 +279,8 @@ public class Controller {
         btUpdate.setManaged(true);
         btDelete.setVisible(false);
         btDelete.setManaged(false);
+        gpRead2.setManaged(false);
+        gpRead2.setVisible(false);
     }
 
 
@@ -397,6 +405,8 @@ public class Controller {
         initializeCbWithIds();
         btDelete.setVisible(true);
         btDelete.setManaged(true);
+        gpRead2.setManaged(false);
+        gpRead2.setVisible(false);
 
     }
 
@@ -686,8 +696,11 @@ public class Controller {
     @FXML
     private void menuAlgorithms() throws FileNotFoundException {
         vbDatabase.setVisible(false);
+        vbDatabase.setManaged(false);
         vbRest1.setVisible(false);
+        vbRest1.setManaged(false);
         vbDataMining.setVisible(true);
+        vbDataMining.setManaged(true);
         gpAlg.setVisible(false);
         gpAlg.setManaged(false);
         PrintWriter kiir;
@@ -749,6 +762,8 @@ public class Controller {
         vbRest1.setManaged(false);
         vbDataMining.setVisible(true);
         vbDataMining.setManaged(true);
+        gpAlg.setVisible(true);
+        gpAlg.setManaged(true);
         String file = "src/main/java/DataMining/ionosphere.arff";
         int classIndex = 34;    // 34. oszlopot kell előre jelezni
         new MachineLearn(file, classIndex);

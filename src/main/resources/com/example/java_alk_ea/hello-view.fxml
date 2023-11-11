@@ -22,7 +22,7 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextArea?>
 <GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.java_alk_ea.Controller">
-<VBox spacing="20.0" xmlns:fx="http://javafx.com/fxml">
+<VBox spacing="30.0" xmlns:fx="http://javafx.com/fxml">
     <MenuBar fx:id="menuBar">
         <menus>
             <Menu text="Adatbázis">
@@ -70,7 +70,7 @@
             </Menu>
         </menus>
     </MenuBar>
-    <VBox spacing="20.0" fx:id="vbDatabase">
+    <VBox spacing="30.0" fx:id="vbDatabase">
     <Label fx:id="lb1">Notebook adatbázis</Label>
     <GridPane fx:id="gp1" hgap="2" vgap="4">
         <Label GridPane.rowIndex="0" GridPane.columnIndex="0">Gyártó:</Label>
@@ -133,12 +133,12 @@
         </GridPane>
 
 </VBox>
-    <VBox spacing="20.0" fx:id="vbRest1" alignment="CENTER">
+    <VBox spacing="30.0" fx:id="vbRest1" alignment="CENTER" prefWidth="400.0">
     <GridPane fx:id="gr6">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="400.0" prefWidth="400.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="400.0" prefWidth="400.0" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -151,9 +151,8 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
         <children>
-            <Label text="Lekérhet egy user-t a https://gorest.co.in szerverről!" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label text="Ha megad egy konkrét ID-t és létezik a szerveren, megkapja a konkrét személyt." GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Label text="Ha üresen hagyja, az összes user-t megkapja (JSON formátumban)." GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="Kérjen le egy user-t a https://gorest.co.in szerverről!" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Üresen, az összes user-t megkapja (JSON formátumban)." GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <TextField fx:id="tf6" promptText="User ID" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <Button mnemonicParsing="false" onAction="#btnRest1MenuReadClick" text="User lekérdezés" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <Label text="A lekérdezett személy(ek) JSON listája:" GridPane.columnIndex="1" GridPane.rowIndex="7" />
@@ -163,8 +162,8 @@
     <GridPane fx:id="gr7">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="400.0" prefWidth="400.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="400.0" prefWidth="400.0" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -182,7 +181,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
         <children>
-            <Label text="Létrehozhat egy új user-t a https://gorest.co.in szerveren! (kötelező mezők)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Új user létrehozása!" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label text="Név:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <TextField fx:id="tf7" promptText="név" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Label text="Nem:" GridPane.columnIndex="1" GridPane.rowIndex="5" />
@@ -191,7 +190,7 @@
             <TextField fx:id="tf9" promptText="e-mail" GridPane.columnIndex="1" GridPane.rowIndex="8" />
             <Label text="Státusz:" GridPane.columnIndex="1" GridPane.rowIndex="9" />
             <TextField fx:id="tf10" promptText="státusz" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <Button mnemonicParsing="false" onAction="#btnRest1MenuCreateClick" text="User létrehozása" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+            <Button mnemonicParsing="false" onAction="#btnRest1MenuCreateClick" text="Létrehozás" GridPane.columnIndex="1" GridPane.rowIndex="11" />
             <Label text="A létrehozás eredménye:" GridPane.columnIndex="1" GridPane.rowIndex="12" />
             <TextArea fx:id="ta2" GridPane.columnIndex="1" GridPane.rowIndex="13" />
         </children>
@@ -199,8 +198,8 @@
     <GridPane fx:id="gr8">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="400.0" prefWidth="400.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="400.0" prefWidth="400.0" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -220,7 +219,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
         <children>
-            <Label text="Módosíthat egy már létező user-t a https://gorest.co.in szerveren! (kötelező mezők)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="User módosítása!" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label text="ID:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <TextField fx:id="tf11" promptText="id" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Label text="Név:" GridPane.columnIndex="1" GridPane.rowIndex="5" />
@@ -239,8 +238,8 @@
     <GridPane fx:id="gr9">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="400.0" prefWidth="400.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="400.0" prefWidth="400.0" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -252,7 +251,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
         <children>
-            <Label text="Törölhet egy már létező user-t a https://gorest.co.in szerverről!" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="User törlése!" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label text="Adja meg a törölni kívánt user ID-ját:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <TextField fx:id="tf16" promptText="id" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Button mnemonicParsing="false" onAction="#btnRest1MenuDeleteClick" text="User törlése" GridPane.columnIndex="1" GridPane.rowIndex="5" />
@@ -262,7 +261,7 @@
     </GridPane>
     </VBox>
 
-    <VBox spacing="20.0" fx:id="vbDataMining" alignment="CENTER">
+    <VBox spacing="30.0" fx:id="vbDataMining" alignment="CENTER">
     <GridPane fx:id="gpAlg" hgap="2" vgap="4">
         <Label fx:id="lb3">Kérem válassza ki az algoritmust!</Label>
         <ComboBox fx:id="cb2" GridPane.rowIndex="2" GridPane.columnIndex="1" onAction="#handleComboBoxSelection2"/>

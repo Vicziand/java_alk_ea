@@ -23,14 +23,13 @@ public class MainApplication extends Application {
 
         // JavaFX alkalmazás inicializálása
         Scene scene = new Scene(root);
-        stage.setWidth(800);
+        stage.setWidth(1000);
         stage.setHeight(600);
         stage.setScene(scene);
         stage.show();
 
         Controller controller = loader.getController();
         controller.initializeSessionFactory(factory);
-        //controller.menuReadClick();
 
     }
 
@@ -41,23 +40,6 @@ public class MainApplication extends Application {
                 .build();
         Metadata metadata = new MetadataSources(standardRegistry).getMetadataBuilder().build();
         factory = metadata.getSessionFactoryBuilder().build();
-
-
-       // try {
-            //restClient.GET(null);
-            // Emailnek egyedinek kell lenni!!!
-            //restClient.POST("Horváth János", "male", "email21@data.hu","active");
-            //String ID="3399";
-            //restClient.GET(ID);
-            //restClient.PUT(ID,"Horváth János2", "male", "email3@data.hu","active");
-            //restClient.GET(ID);
-            //restClient.DELETE(ID);
-            //restClient.GET(ID);
-            //restClient.GET(null);
-       // } catch (IOException e) {
-        //    e.printStackTrace();
-        //}
-
 
 
         launch(args);
