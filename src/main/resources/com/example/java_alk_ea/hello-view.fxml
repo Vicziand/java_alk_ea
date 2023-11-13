@@ -68,6 +68,13 @@
                     <MenuItem text ="Több algoritmus 2" onAction="#menuAlgorithms2"/>
                 </items>
             </Menu>
+
+            <Menu text="Egyéb">
+                <items>
+                    <MenuItem text ="Párhuzamos" onAction="#menuParallel"/>
+                </items>
+            </Menu>
+
         </menus>
     </MenuBar>
     <VBox spacing="30.0" fx:id="vbDatabase">
@@ -268,7 +275,14 @@
     </GridPane>
     </VBox>
 
-
+    <VBox spacing="20.0" fx:id="vbOthers">
+        <children>
+            <Label fx:id="label1" text="Label 1"/>
+            <Label fx:id="label2" text="Label 2"/>
+            <Button fx:id="startButton" text="Start" onAction="#startTasks"/>
+            <Button fx:id="stopButton" text="Stop" onAction="#stopTasks"/>
+        </children>
+    </VBox>
 
 </VBox>
 </GridPane>
