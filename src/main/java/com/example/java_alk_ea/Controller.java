@@ -7,6 +7,7 @@ import Grafikus.Gep;
 import Grafikus.GepCreate;
 import Grafikus.Oprendszer;
 import Grafikus.Processzor;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -88,9 +89,17 @@ public class Controller {
     @FXML
     private TextArea ta1,ta2,ta3,ta4;
 
+    @FXML
+    private Button startButton, stopButton;
+
+    @FXML
+    private Label label1, label2;
+
     static String token = "1db5e41713588809f524d82fc1713cb66e45c47dcb63e42b35e85c48f54202bb";
     HttpsURLConnection httpsURLConnection;
     SessionFactory factory;
+
+    private volatile boolean stopThreads = false;
 
     // SessionFactory inicializálása az adatbázis műveletekhez
     public void initializeSessionFactory(SessionFactory factory) {
@@ -796,4 +805,67 @@ public class Controller {
         }
     }
 
+
+    // 5. feladat Párhuzamos, Stream(mégnincsmeg)
+    @FXML
+    private void menuParallel() {
+
+        vbDataMining.setVisible(false);
+        vbDataMining.setManaged(false);
+        vbRest1.setVisible(false);
+        vbRest1.setManaged(false);
+        vbDatabase.setManaged(false);
+        vbDatabase.setVisible(false);
+        startButton.setVisible(true);
+        startButton.setManaged(true);
+        stopButton.setVisible(true);
+        stopButton.setManaged(true);
+
+        label1.setVisible(true);
+        label1.setManaged(true);
+
+        label2.setVisible(true);
+        label2.setManaged(true);
+
+    }
+
+    @FXML
+    public void startTasks() {
+        Thread thread1 = new Thread(() -> {
+            int count = 1;
+            while (!stopThreads) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                String text = "Label 1: " + count++;
+                Platform.runLater(() -> label1.setText(text));
+            }
+        });
+
+        Thread thread2 = new Thread(() -> {
+            int count = 1;
+            while (!stopThreads) {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                String text = "Label 2: " + count++;
+                Platform.runLater(() -> label2.setText(text));
+            }
+        });
+
+        thread1.setDaemon(true);
+        thread2.setDaemon(true);
+
+        thread1.start();
+        thread2.start();
+    }
+
+
+    public void stopTasks() {
+        stopThreads = true;
+    }
 }
