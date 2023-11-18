@@ -21,6 +21,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ScrollPane?>
 <GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.java_alk_ea.Controller">
 <VBox spacing="30.0" xmlns:fx="http://javafx.com/fxml">
     <MenuBar fx:id="menuBar">
@@ -72,6 +73,27 @@
             <Menu text="Egyéb">
                 <items>
                     <MenuItem text ="Párhuzamos" onAction="#menuParallel"/>
+                </items>
+            </Menu>
+
+            <Menu text="Forex">
+                <items>
+                    <MenuItem text ="Számlainformációk" onAction="#menuAccountInfo"/>
+                </items>
+                <items>
+                    <MenuItem text ="Aktuális árak" onAction="#menuCurrentPrice"/>
+                </items>
+                <items>
+                    <MenuItem text ="Historikus árak" onAction="#menuHistoricalPrice"/>
+                </items>
+                <items>
+                    <MenuItem text ="Pozíció Nyitás" onAction="#menuPositionOpen"/>
+                </items>
+                <items>
+                    <MenuItem text ="Pozíció Zárás" onAction="#menuPositionClose"/>
+                </items>
+                <items>
+                    <MenuItem text ="Nyitott pozíciók" onAction="#menuOpenPositions"/>
                 </items>
             </Menu>
 
@@ -275,13 +297,34 @@
     </GridPane>
     </VBox>
 
-    <VBox spacing="20.0" fx:id="vbOthers">
+    <VBox spacing="30.0" fx:id="vbOthers">
         <children>
             <Label fx:id="label1" text="Label 1"/>
             <Label fx:id="label2" text="Label 2"/>
             <Button fx:id="startButton" text="Start" onAction="#startTasks"/>
             <Button fx:id="stopButton" text="Stop" onAction="#stopTasks"/>
         </children>
+    </VBox>
+
+    <VBox spacing="50.0" fx:id="vbForex">
+        <TableView fx:id="tvForex" >
+        </TableView>
+
+        <GridPane fx:id="gpActPrice" hgap="2" vgap="4">
+            <Label fx:id="lb4">Kérem válassza ki a devizapárt!</Label>
+            <ComboBox fx:id="cbActPrice" GridPane.rowIndex="2" GridPane.columnIndex="1" onAction="#handleComboBoxSelection"/>
+            <TextArea fx:id="taActPrice"> </TextArea>
+            <Label fx:id="lbActPrice"></Label>
+        </GridPane>
+
+        <GridPane fx:id="gpPositionClose" hgap="2" vgap="4">
+        <Label GridPane.rowIndex="0" GridPane.columnIndex="0">Trade Id</Label>
+        <TextField fx:id="tfTrade" GridPane.rowIndex="0" GridPane.columnIndex="1"></TextField>
+        <Button fx:id="btTrade" onAction="#btTradeClick" GridPane.rowIndex="11" GridPane.columnIndex="1" >Küldés</Button>
+        </GridPane>
+
+        <TableView fx:id="tvOpenedTrade" >
+        </TableView>
     </VBox>
 
 </VBox>

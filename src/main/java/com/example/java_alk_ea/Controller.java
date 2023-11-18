@@ -7,10 +7,31 @@ import Grafikus.Gep;
 import Grafikus.GepCreate;
 import Grafikus.Oprendszer;
 import Grafikus.Processzor;
+import Oanda.Config;
+import com.oanda.v20.Context;
+import com.oanda.v20.ContextBuilder;
+import com.oanda.v20.ExecuteException;
+import com.oanda.v20.RequestException;
+import com.oanda.v20.account.AccountID;
+import com.oanda.v20.account.AccountSummary;
+import com.oanda.v20.order.MarketOrderRequest;
+import com.oanda.v20.order.OrderCreateRequest;
+import com.oanda.v20.order.OrderCreateResponse;
+import com.oanda.v20.pricing.ClientPrice;
+import com.oanda.v20.pricing.PricingGetRequest;
+import com.oanda.v20.pricing.PricingGetResponse;
+import com.oanda.v20.primitives.DateTime;
+import com.oanda.v20.primitives.InstrumentName;
+import com.oanda.v20.trade.Trade;
+import com.oanda.v20.trade.TradeCloseRequest;
+import com.oanda.v20.trade.TradeSpecifier;
+import com.oanda.v20.transaction.TransactionID;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -25,6 +46,8 @@ import org.hibernate.query.Query;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import weka.classifiers.bayes.NaiveBayes;
@@ -33,25 +56,26 @@ import weka.classifiers.lazy.IBk;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Utils;
+import weka.core.stopwords.Null;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class Controller {
 
     @FXML
-    private Label lb1, lb2,lb3;
+    private Label lb1, lb2,lb3,lb4,lbActPrice;
     @FXML
-    private GridPane gp1,gpAlg;
+    private GridPane gp1,gpAlg,gpActPrice;
     @FXML
     private TextField tfGyarto, tfTipus, tfKijelzo, tfMemoria, tfMerevlemez, tfVideovezerlo, tfAr, tfProcesszorgyarto, tfProcesszortipus, tfOprendszernev, tfDb,tfRead2;
     @FXML
-    private GridPane gpUpdate,gpRead2;
+    private GridPane gpUpdate,gpRead2,gpPositionClose;
     @FXML
-    private ComboBox cb1,cb2;
+    private ComboBox cb1,cb2,cbActPrice;
     @FXML
     private Button btUpdate, btCreate, btDelete;
     @FXML
-    private VBox vbDatabase,vbDataMining,vbRest1;
+    private VBox vbDatabase,vbDataMining,vbRest1,vbOthers,vbForex;
 
 
     @FXML
@@ -85,7 +109,7 @@ public class Controller {
     @FXML
     private GridPane gr6,gr7,gr8,gr9;
     @FXML
-    private  TextField tf6,tf7,tf8,tf9,tf10,tf11,tf12,tf13,tf14,tf15,tf16;
+    private  TextField tf6,tf7,tf8,tf9,tf10,tf11,tf12,tf13,tf14,tf15,tf16,tfTrade;
     @FXML
     private TextArea ta1,ta2,ta3,ta4;
 
@@ -95,9 +119,22 @@ public class Controller {
     @FXML
     private Label label1, label2;
 
+    @FXML
+    private TableView<AccountSummary> tvForex;
+    @FXML
+    private TableView<Trade> tvOpenedTrade;
+    @FXML
+    private TableColumn<Trade, String> IdCol3,InstrumentCol3,OpenedTimeCol3,CurrentUnitsCol3,PriceCol3,UnrealizedPLCol3;
+    @FXML
+    private TableColumn<AccountSummary, String> AliasCol2,IDCol2,CurrencyCol2,BalanceCol2,CreatedByCol2,CreatedTimeCol2,GuarantedCol2,PlCol2;
+    @FXML
+    private TextArea taActPrice;
+
     static String token = "1db5e41713588809f524d82fc1713cb66e45c47dcb63e42b35e85c48f54202bb";
     HttpsURLConnection httpsURLConnection;
     SessionFactory factory;
+    static Context ctx;
+    static AccountID accountId;
 
     private volatile boolean stopThreads = false;
 
@@ -682,6 +719,8 @@ public class Controller {
     // 4. Feladat Adatbányászat
     @FXML
     protected void menuDecisionTree() {
+        vbOthers.setVisible(false);
+        vbOthers.setManaged(false);
         vbDatabase.setVisible(false);
         vbRest1.setVisible(false);
         vbDataMining.setVisible(true);
@@ -704,6 +743,8 @@ public class Controller {
 
     @FXML
     private void menuAlgorithms() throws FileNotFoundException {
+        vbOthers.setVisible(false);
+        vbOthers.setManaged(false);
         vbDatabase.setVisible(false);
         vbDatabase.setManaged(false);
         vbRest1.setVisible(false);
@@ -765,6 +806,8 @@ public class Controller {
 
     @FXML
     private void menuAlgorithms2(){
+        vbOthers.setVisible(false);
+        vbOthers.setManaged(false);
         vbDatabase.setVisible(false);
         vbDatabase.setManaged(false);
         vbRest1.setVisible(false);
@@ -864,8 +907,284 @@ public class Controller {
         thread2.start();
     }
 
-
     public void stopTasks() {
         stopThreads = true;
     }
-}
+
+//6. Forex menü
+// Jelszó oanda.com: W+iDn5AWRtw6
+// Account ID: 101-004-27439358-001
+// Token: e585b16c2da277387afe97a6bca5c8b7-6dad5b819772ba63b38919783c15fffe
+
+    public void visibleForex(){
+        vbDataMining.setVisible(false);
+        vbDataMining.setManaged(false);
+        vbRest1.setVisible(false);
+        vbRest1.setManaged(false);
+        vbDatabase.setManaged(false);
+        vbDatabase.setVisible(false);
+        vbOthers.setManaged(false);
+        vbOthers.setVisible(false);
+    }
+
+    @FXML
+    public void menuAccountInfo(){
+        visibleForex();
+        gpActPrice.setManaged(false);
+        gpActPrice.setVisible(false);
+        tvForex.setVisible(true);
+        tvForex.setManaged(true);
+        tvOpenedTrade.setManaged(false);
+        tvOpenedTrade.setVisible(false);
+        gpPositionClose.setManaged(false);
+        gpPositionClose.setVisible(false);
+        Context ctx = new Context("https://api-fxpractice.oanda.com", Config.TOKEN);
+        AccountSummary summary;
+        try {
+            summary = ctx.account.summary(new AccountID(Config.ACCOUNTID)).getAccount();
+            System.out.println(summary);
+
+            IDCol2 = new TableColumn<>("Id");
+            AliasCol2 = new TableColumn<>("Alias");
+            CurrencyCol2 = new TableColumn<>("Currency");
+            BalanceCol2 = new TableColumn<>("Balance");
+            CreatedByCol2 = new TableColumn<>("Created by");
+            CreatedTimeCol2 = new TableColumn<>("Created time");
+            GuarantedCol2 = new TableColumn<>("Guaranred SLO Mode");
+
+            IDCol2.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId().toString()));
+            AliasCol2.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAlias()));
+            CurrencyCol2.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCurrency().toString()));
+            BalanceCol2.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBalance().toString()));
+            CreatedByCol2.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCreatedByUserID().toString()));
+            CreatedTimeCol2.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCreatedTime().toString()));
+            GuarantedCol2.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGuaranteedStopLossOrderMode().toString()));
+
+            tvForex.getColumns().addAll(IDCol2,AliasCol2,CurrencyCol2,BalanceCol2,CreatedByCol2,CreatedTimeCol2,GuarantedCol2);
+
+
+            ObservableList<AccountSummary> data = FXCollections.observableArrayList(summary);
+            tvForex.setItems(data);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("HIBA: " + e.getMessage());
+        }
+
+    }
+
+    @FXML
+    public void menuCurrentPrice() {
+        visibleForex();
+        gpActPrice.setManaged(true);
+        gpActPrice.setVisible(true);
+        tvForex.setVisible(false);
+        tvForex.setManaged(false);
+        tvOpenedTrade.setManaged(false);
+        tvOpenedTrade.setVisible(false);
+        gpPositionClose.setManaged(false);
+        gpPositionClose.setVisible(false);
+        Context ctx = new ContextBuilder(Config.URL).setToken(Config.TOKEN).setApplication("PricePolling").build();
+        AccountID accountId = Config.ACCOUNTID;
+
+        List<String> instruments = new ArrayList<>(Arrays.asList("EUR_USD", "USD_JPY", "GBP_USD", "USD_CHF"));
+        ObservableList<String> instrumentsList = FXCollections.observableArrayList(instruments);
+        cbActPrice.setItems(instrumentsList);
+
+        cbActPrice.setOnAction(event -> handlePriceSelection(ctx, accountId));
+    }
+
+
+    private void handlePriceSelection(Context ctx, AccountID accountId) {
+        String selectedInstrument = (String) cbActPrice.getValue();
+        if (selectedInstrument != null) {
+            // A háttérfolyamat definiálása
+            Task<Void> backgroundTask = new Task<>() {
+                @Override
+                protected Void call() throws Exception {
+                    PricingGetRequest request = new PricingGetRequest(accountId, Collections.singletonList(selectedInstrument));
+                    DateTime since = null;
+                    while (!isCancelled()) {
+                        if (since != null) {
+                            //System.out.println("Polling since " + since);
+                            DateTime finalSince = since;
+                            Platform.runLater(() -> lbActPrice.setText("Polling since  " + finalSince));
+                            request.setSince(since);
+                        }
+                        PricingGetResponse resp = ctx.pricing.get(request);
+                        for (ClientPrice price : resp.getPrices()) {
+                            if (price.getInstrument().equals(selectedInstrument)) {
+                               // System.out.println(price);
+                                cbActPrice.setVisible(false);
+                                cbActPrice.setVisible(false);
+                                lb4.setVisible(false);
+                                lb4.setManaged(false);
+                                Platform.runLater(() -> taActPrice.setText(price.toString()));
+                            }
+                        }
+                        since = resp.getTime();
+                        Thread.sleep(1000);
+                    }
+                    return null;
+                }
+            };
+
+            // A háttérfolyamat indítása egy új szálon
+            Thread backgroundThread = new Thread(backgroundTask);
+            backgroundThread.setDaemon(true);
+            backgroundThread.start();
+        }
+    }
+
+    @FXML
+    public void menuHistoricalPrice(){
+        visibleForex();
+    }
+
+    @FXML
+    public void menuPositionOpen() {
+        visibleForex();
+        gpActPrice.setVisible(true);
+        gpActPrice.setManaged(true);
+        tvForex.setVisible(false);
+        tvForex.setManaged(false);
+        taActPrice.setVisible(false);
+        taActPrice.setManaged(false);
+        tvOpenedTrade.setManaged(false);
+        tvOpenedTrade.setVisible(false);
+        gpPositionClose.setManaged(false);
+        gpPositionClose.setVisible(false);
+        ctx = new ContextBuilder(Config.URL).setToken(Config.TOKEN).setApplication("StepByStepOrder").build();
+        accountId = Config.ACCOUNTID;
+        List<String> instruments = new ArrayList<>(Arrays.asList("EUR_USD", "USD_JPY", "GBP_USD", "USD_CHF", "NZD_USD"));
+        ObservableList<String> instrumentsList = FXCollections.observableArrayList(instruments);
+        cbActPrice.setItems(instrumentsList);
+
+        // ComboBox kiválasztásának figyelése
+        cbActPrice.setOnAction(event -> {
+            String selectedInstrument = (String) cbActPrice.getValue();
+            if (selectedInstrument != null) {
+                Nyitás(selectedInstrument);
+                System.out.println("Kész");
+            }
+        });
+    }
+
+    static void Nyitás(String instrument){
+        System.out.println("Place a Market Order");
+
+        try {
+            OrderCreateRequest request = new OrderCreateRequest(accountId);
+            MarketOrderRequest marketorderrequest = new MarketOrderRequest();
+            marketorderrequest.setInstrument(instrument);
+// Ha pozitív, akkor LONG, ha negatív, akkor SHORT:
+            marketorderrequest.setUnits(-10);
+            request.setOrder(marketorderrequest);
+            OrderCreateResponse response = ctx.order.create(request);
+            System.out.println("tradeId: "+response.getOrderFillTransaction().getId());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    public void menuPositionClose() {
+        visibleForex();
+        ctx = new ContextBuilder(Config.URL).setToken(Config.TOKEN).setApplication("StepByStepOrder").build();
+        accountId = Config.ACCOUNTID;
+        gpPositionClose.setVisible(true);
+        gpPositionClose.setManaged(true);
+        tvForex.setVisible(false);
+        tvForex.setManaged(false);
+        taActPrice.setVisible(false);
+        taActPrice.setManaged(false);
+        gpActPrice.setVisible(false);
+        gpActPrice.setManaged(false);
+        tvOpenedTrade.setManaged(false);
+        tvOpenedTrade.setVisible(false);
+
+
+    }
+
+    static void Zárás(int selectedId) {
+        System.out.println("Close a Trade");
+        if (ctx == null) {
+            System.err.println("Context is not initialized. Cannot close trade.");
+            return;
+        }
+        // Ide a zárni kívánt tradeId-t kell beírni:
+        TransactionID tradeId = new TransactionID(Integer.toString(selectedId));
+        try {
+            ctx.trade.close(new TradeCloseRequest(accountId, new TradeSpecifier(tradeId.toString())));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    public void btTradeClick() {
+        try {
+            int selectedId = Integer.parseInt(tfTrade.getText());
+            System.out.println(selectedId);
+            if (false) Nyitás("EUR_USD");
+            if (true) Zárás(selectedId);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid trade ID format. Please enter a valid integer.");
+        }
+    }
+    @FXML
+    public void  menuOpenPositions() throws ExecuteException, RequestException {
+        visibleForex();
+        tvForex.setVisible(false);
+        tvForex.setManaged(false);
+        taActPrice.setVisible(false);
+        taActPrice.setManaged(false);
+        gpActPrice.setVisible(false);
+        gpActPrice.setManaged(false);
+        gpPositionClose.setManaged(false);
+        gpPositionClose.setManaged(false);
+        tvOpenedTrade.setManaged(true);
+        tvOpenedTrade.setVisible(true);
+        if(true) NyitotttradekKiír();
+
+    }
+
+    public void NyitotttradekKiír() throws ExecuteException, RequestException {
+        ctx = new ContextBuilder(Config.URL).setToken(Config.TOKEN).setApplication("StepByStepOrder").build();
+        accountId = Config.ACCOUNTID;
+        System.out.println("Nyitott tradek:");
+        List<Trade> trades = ctx.trade.listOpen(accountId).getTrades();
+        for(Trade trade: trades) {
+            System.out.println(trade);
+        }
+        for(Trade trade: trades) {
+            System.out.println(trade.getId() + "\t" + trade.getInstrument() + "\t" + trade.getOpenTime() + "\t" + trade.getCurrentUnits() + "\t" + trade.getPrice() + "\t" + trade.getUnrealizedPL());
+        }
+        tvOpenedTrade.getColumns().clear();
+
+        IdCol3 = new TableColumn<>("Id");
+        InstrumentCol3 = new TableColumn<>("Instrument");
+        OpenedTimeCol3 = new TableColumn<>("Open Time");
+        CurrentUnitsCol3 = new TableColumn<>("Current Units");
+        PriceCol3 = new TableColumn<>("Price");
+        UnrealizedPLCol3 = new TableColumn<>("Unrealized PL");
+
+        IdCol3.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId().toString()));
+        InstrumentCol3.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getInstrument().toString()));
+        OpenedTimeCol3.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOpenTime().toString()));
+        CurrentUnitsCol3.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCurrentUnits().toString()));
+        PriceCol3.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPrice().toString()));
+        UnrealizedPLCol3.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnrealizedPL().toString()));
+
+        tvOpenedTrade.getColumns().addAll(IdCol3,InstrumentCol3,OpenedTimeCol3,CurrentUnitsCol3,PriceCol3,UnrealizedPLCol3);
+
+        ObservableList<Trade> tradeList = FXCollections.observableArrayList(trades);
+        tvOpenedTrade.setItems(tradeList);
+
+    }
+
+
+
+
+    }
