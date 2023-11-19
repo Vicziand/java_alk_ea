@@ -39,7 +39,6 @@
             <scope>test</scope>
         </dependency>
 
-
             <dependency>
                 <groupId>org.xerial</groupId>
                 <artifactId>sqlite-jdbc</artifactId>
@@ -63,14 +62,11 @@
             <version>20210307</version> <!-- A verziószám a frissített verziószámra utalhat -->
         </dependency>
 
-
             <dependency>
                 <groupId>com.oanda.v20</groupId>
                 <artifactId>v20</artifactId>
                 <version>3.0.25</version>
             </dependency>
-
-
 
         <!-- Függőség a Weka adatbányász szoftverhez -->
             <dependency>

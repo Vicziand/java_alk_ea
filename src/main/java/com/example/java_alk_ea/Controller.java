@@ -75,7 +75,7 @@ public class Controller {
     @FXML
     private Button btUpdate, btCreate, btDelete;
     @FXML
-    private VBox vbDatabase,vbDataMining,vbRest1,vbOthers,vbForex;
+    private VBox vbDatabase,vbDataMining,vbRest1,vbOthers,vbForex,vbMain;
 
 
     @FXML
@@ -143,6 +143,22 @@ public class Controller {
         this.factory = factory;
     }
 
+    @FXML
+    public void initialize() {
+        vbDatabase.setVisible(false);
+        vbDatabase.setManaged(false);
+        vbDataMining.setVisible(false);
+        vbDataMining.setManaged(false);
+        vbRest1.setVisible(false);
+        vbRest1.setManaged(false);
+        vbOthers.setManaged(false);
+        vbOthers.setVisible(false);
+        vbForex.setManaged(false);
+        vbForex.setVisible(false);
+        vbMain.setVisible(true);
+        vbMain.setManaged(true);
+    }
+
     //A ElemekTörlése metódus  a TableView (tv1) táblázatban  előző elemeit törli.
     private void ElemekTörlése() {
         tv1.getItems().clear();
@@ -157,6 +173,21 @@ public class Controller {
         tfProcesszortipus.clear();
         tfOprendszernev.clear();
         tfDb.clear();
+    }
+
+    public void visibleDatabase(){
+        vbDatabase.setVisible(true);
+        vbDatabase.setManaged(true);
+        vbDataMining.setVisible(false);
+        vbDataMining.setManaged(false);
+        vbRest1.setVisible(false);
+        vbRest1.setManaged(false);
+        vbOthers.setManaged(false);
+        vbOthers.setVisible(false);
+        vbForex.setManaged(false);
+        vbForex.setVisible(false);
+        vbMain.setVisible(false);
+        vbMain.setManaged(false);
     }
 
     @FXML
@@ -214,10 +245,7 @@ public class Controller {
         }
 
 
-        vbDataMining.setManaged(false);
-        vbDataMining.setVisible(false);
-        vbRest1.setVisible(false);
-        vbRest1.setManaged(false);
+        visibleDatabase();
         gp1.setVisible(false);
         gp1.setManaged(false);
         gpUpdate.setVisible(false);
@@ -229,13 +257,11 @@ public class Controller {
 
     }
 
-    //A menuCreateClick metódus megjeleníti az új adatok beviteléhez a GridPane-t
+
     @FXML
     protected void menuCreateClick() {
         ElemekTörlése();
-        vbDatabase.setVisible(true);
-        vbRest1.setVisible(false);
-        vbDataMining.setVisible(false);
+        visibleDatabase();
         gp1.setVisible(true);
         gp1.setManaged(true);
         gpUpdate.setVisible(false);
@@ -253,6 +279,8 @@ public class Controller {
 
     // Create metódus segítségével adjuk hozzá az adatokat az adatbázishoz
     void Create() {
+        System.out.println("tfGyarto: " + tfGyarto.getText());
+        System.out.println("tfTipus: " + tfTipus.getText());
         try (Session session = factory.openSession()) {
             Transaction t = session.getTransaction();
             try {
@@ -299,7 +327,7 @@ public class Controller {
     //bt1Click metódus a Küldés gomb megnyomása után a Create metódus meghívása
     @FXML
     void btCreateClick() {
-        ElemekTörlése();
+        visibleDatabase();
         Create();
         lb1.setVisible(true);
         lb1.setManaged(true);
@@ -309,9 +337,7 @@ public class Controller {
 
     @FXML
     protected void menuUpdateClick() {
-        vbDatabase.setVisible(true);
-        vbRest1.setVisible(false);
-        vbDataMining.setVisible(false);
+        visibleDatabase();
         gpUpdate.setVisible(true);
         gpUpdate.setManaged(true);
         ElemekTörlése();
@@ -438,7 +464,6 @@ public class Controller {
         }
     }
 
-
     @FXML
     protected void menuDeleteClick() {
         gpUpdate.setVisible(true);
@@ -478,10 +503,7 @@ public class Controller {
     }
 
     @FXML protected void menuRead2Click(){
-        vbRest1.setVisible(false);
-        vbRest1.setManaged(false);
-        vbDataMining.setVisible(false);
-        vbDatabase.setManaged(false);
+        visibleDatabase();
         gpUpdate.setVisible(false);
         gpUpdate.setManaged(false);
         btDelete.setManaged(false);
@@ -494,7 +516,6 @@ public class Controller {
         tv1.setManaged(false);
         gpRead2.setVisible(true);
         gpRead2.setManaged(true);
-
 
         try (Session session = factory.openSession()) {
             Transaction t = session.beginTransaction();
@@ -520,11 +541,22 @@ public class Controller {
         }
     }
 
-
-
-
-
     // 2. feladat Rest
+
+    public void visibleRest(){
+        vbDataMining.setVisible(false);
+        vbDataMining.setManaged(false);
+        vbRest1.setVisible(true);
+        vbRest1.setManaged(true);
+        vbDatabase.setManaged(false);
+        vbDatabase.setVisible(false);
+        vbOthers.setManaged(false);
+        vbOthers.setVisible(false);
+        vbForex.setVisible(false);
+        vbForex.setManaged(false);
+        vbMain.setVisible(false);
+        vbMain.setManaged(false);
+    }
 
     protected void clearControlUIData(TextField... tfList) {
         for(TextField tf : tfList) tf.setText("");
@@ -560,9 +592,8 @@ public class Controller {
     }
     @FXML
     protected void rest1MenuCreateClick() {
-        vbRest1.setManaged(true);
-        vbRest1.setVisible(true);
         ElemekTörlése();
+        visibleRest();
         clearControlUIData(tf7, tf8, tf9, tf10);
         ta2.setText("");
         gr7.setVisible(true);
@@ -573,10 +604,7 @@ public class Controller {
         gr8.setManaged(false);
         gr9.setVisible(false);
         gr9.setManaged(false);
-        vbDatabase.setManaged(false);
-        vbDatabase.setVisible(false);
-        vbDataMining.setVisible(false);
-        vbDataMining.setManaged(false);
+
     }
     @FXML
     protected void btnRest1MenuCreateClick() throws IOException {
@@ -600,8 +628,7 @@ public class Controller {
     }
     @FXML
     protected void rest1MenuReadClick() {
-        vbRest1.setManaged(true);
-        vbRest1.setVisible(true);
+        visibleRest();
         ElemekTörlése();
         clearControlUIData(tf6);
         ta1.setText("");
@@ -613,10 +640,7 @@ public class Controller {
         gr8.setManaged(false);
         gr9.setVisible(false);
         gr9.setManaged(false);
-        vbDatabase.setManaged(false);
-        vbDatabase.setVisible(false);
-        vbDataMining.setVisible(false);
-        vbDataMining.setManaged(false);
+
     }
     @FXML
     protected void btnRest1MenuReadClick() throws IOException {
@@ -641,8 +665,7 @@ public class Controller {
     protected void rest1MenuUpdateClick() {
         ElemekTörlése();
         clearControlUIData(tf11, tf12, tf13, tf14, tf15);
-        vbRest1.setManaged(true);
-        vbRest1.setVisible(true);
+        visibleRest();
         ta3.setText("");
         gr7.setVisible(false);
         gr7.setManaged(false);
@@ -652,10 +675,7 @@ public class Controller {
         gr9.setManaged(false);
         gr8.setVisible(true);
         gr8.setManaged(true);
-        vbDatabase.setManaged(false);
-        vbDatabase.setVisible(false);
-        vbDataMining.setVisible(false);
-        vbDataMining.setManaged(false);
+
     }
     @FXML
     protected void btnRest1MenuUpdateClick() throws IOException {
@@ -682,8 +702,7 @@ public class Controller {
     @FXML
     protected void rest1MenuDeleteClick() {
         ElemekTörlése();
-        vbRest1.setManaged(true);
-        vbRest1.setVisible(true);
+        visibleRest();
         clearControlUIData(tf16);
         ta4.setText("");
         gr9.setVisible(true);
@@ -694,10 +713,7 @@ public class Controller {
         gr6.setManaged(false);
         gr8.setVisible(false);
         gr8.setManaged(false);
-        vbDatabase.setManaged(false);
-        vbDatabase.setVisible(false);
-        vbDataMining.setVisible(false);
-        vbDataMining.setManaged(false);
+
     }
     @FXML
     protected void btnRest1MenuDeleteClick() throws IOException {
@@ -717,13 +733,25 @@ public class Controller {
     }
 
     // 4. Feladat Adatbányászat
+
+    public void visibleDatamining(){
+        vbDataMining.setVisible(true);
+        vbDataMining.setManaged(true);
+        vbRest1.setVisible(false);
+        vbRest1.setManaged(false);
+        vbDatabase.setManaged(false);
+        vbDatabase.setVisible(false);
+        vbOthers.setManaged(false);
+        vbOthers.setVisible(false);
+        vbForex.setManaged(false);
+        vbForex.setVisible(false);
+        vbMain.setVisible(false);
+        vbMain.setManaged(false);
+    }
+
     @FXML
     protected void menuDecisionTree() {
-        vbOthers.setVisible(false);
-        vbOthers.setManaged(false);
-        vbDatabase.setVisible(false);
-        vbRest1.setVisible(false);
-        vbDataMining.setVisible(true);
+        visibleDatamining();
         gpAlg.setVisible(false);
         gpAlg.setManaged(false);
         String file = "src/main/java/DataMining/ionosphere.arff";
@@ -743,14 +771,7 @@ public class Controller {
 
     @FXML
     private void menuAlgorithms() throws FileNotFoundException {
-        vbOthers.setVisible(false);
-        vbOthers.setManaged(false);
-        vbDatabase.setVisible(false);
-        vbDatabase.setManaged(false);
-        vbRest1.setVisible(false);
-        vbRest1.setManaged(false);
-        vbDataMining.setVisible(true);
-        vbDataMining.setManaged(true);
+        visibleDatamining();
         gpAlg.setVisible(false);
         gpAlg.setManaged(false);
         PrintWriter kiir;
@@ -806,14 +827,7 @@ public class Controller {
 
     @FXML
     private void menuAlgorithms2(){
-        vbOthers.setVisible(false);
-        vbOthers.setManaged(false);
-        vbDatabase.setVisible(false);
-        vbDatabase.setManaged(false);
-        vbRest1.setVisible(false);
-        vbRest1.setManaged(false);
-        vbDataMining.setVisible(true);
-        vbDataMining.setManaged(true);
+        visibleDatamining();
         gpAlg.setVisible(true);
         gpAlg.setManaged(true);
         String file = "src/main/java/DataMining/ionosphere.arff";
@@ -850,15 +864,26 @@ public class Controller {
 
 
     // 5. feladat Párhuzamos, Stream(mégnincsmeg)
-    @FXML
-    private void menuParallel() {
 
+    public void visibleOthers(){
         vbDataMining.setVisible(false);
         vbDataMining.setManaged(false);
         vbRest1.setVisible(false);
         vbRest1.setManaged(false);
         vbDatabase.setManaged(false);
         vbDatabase.setVisible(false);
+        vbOthers.setManaged(true);
+        vbOthers.setVisible(true);
+        vbForex.setVisible(false);
+        vbForex.setManaged(false);
+        vbMain.setVisible(false);
+        vbMain.setManaged(false);
+    }
+
+    @FXML
+    private void menuParallel() {
+
+        visibleOthers();
         startButton.setVisible(true);
         startButton.setManaged(true);
         stopButton.setVisible(true);
@@ -925,6 +950,10 @@ public class Controller {
         vbDatabase.setVisible(false);
         vbOthers.setManaged(false);
         vbOthers.setVisible(false);
+        vbForex.setManaged(true);
+        vbForex.setVisible(true);
+        vbMain.setVisible(false);
+        vbMain.setManaged(false);
     }
 
     @FXML
@@ -1185,6 +1214,4 @@ public class Controller {
     }
 
 
-
-
-    }
+}

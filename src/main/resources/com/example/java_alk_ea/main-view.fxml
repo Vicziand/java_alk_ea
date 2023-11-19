@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
@@ -12,21 +12,18 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.ComboBox?>
-
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.ScrollPane?>
+
 <GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.java_alk_ea.Controller">
-<VBox spacing="30.0" xmlns:fx="http://javafx.com/fxml">
-    <MenuBar fx:id="menuBar">
-        <menus>
-            <Menu text="Adatbázis">
+<VBox spacing="50.0" xmlns:fx="http://javafx.com/fxml">
+    <MenuBar fx:id="menuBar" stylesheets="/menu.css">
+        <menus >
+            <Menu text="Adatbázis" >
                 <items>
                     <MenuItem text ="Create" onAction="#menuCreateClick"/>
                 </items>
@@ -99,9 +96,17 @@
 
         </menus>
     </MenuBar>
-    <VBox spacing="30.0" fx:id="vbDatabase">
+
+    <VBox spacing="50.0" fx:id="vbMain" alignment="CENTER" stylesheets="/menu.css">
+        <Label text="Java alkalmazások beadandó feladat">
+            <style>
+                -fx-font-size: 20px; /* Változtasd meg az igényeidnek megfelelő méretre */
+            </style>
+        </Label>
+    </VBox>
+    <VBox spacing="50.0" fx:id="vbDatabase" alignment="CENTER" stylesheets="/menu.css">
     <Label fx:id="lb1">Notebook adatbázis</Label>
-    <GridPane fx:id="gp1" hgap="2" vgap="4">
+    <GridPane fx:id="gp1" hgap="2" vgap="4" alignment="CENTER">
         <Label GridPane.rowIndex="0" GridPane.columnIndex="0">Gyártó:</Label>
         <TextField fx:id="tfGyarto" GridPane.rowIndex="0" GridPane.columnIndex="1"></TextField>
         <Label GridPane.rowIndex="1" GridPane.columnIndex="0">Típus:</Label>
@@ -131,7 +136,7 @@
     <TableView fx:id="tv1" >
     </TableView>
 
-    <GridPane fx:id="gpUpdate" hgap="2" vgap="4">
+    <GridPane fx:id="gpUpdate" hgap="2" vgap="4" alignment="CENTER">
         <Label fx:id="lb2">Kérem válassza ki a módosítani kívánt rekordot Id alapján!</Label>
     <ComboBox fx:id="cb1" GridPane.rowIndex="2" GridPane.columnIndex="1" onAction="#handleComboBoxSelection"/>
     </GridPane>
@@ -139,12 +144,12 @@
     <Button fx:id="btUpdate" onAction="#btUpdateClick" GridPane.rowIndex="3" GridPane.columnIndex="1">Módosít</Button>
     <Button fx:id="btDelete" onAction="#btDeleteClick" GridPane.rowIndex="3" GridPane.columnIndex="1">Töröl</Button>
 
-        <GridPane fx:id="gpRead2" hgap="8.0" vgap="8.0">
+        <GridPane fx:id="gpRead2" hgap="8.0" vgap="8.0" alignment="CENTER">
             <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="400.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="400.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="400.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="400.0" />
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -162,7 +167,7 @@
         </GridPane>
 
 </VBox>
-    <VBox spacing="30.0" fx:id="vbRest1" alignment="CENTER" prefWidth="400.0">
+    <VBox spacing="50.0" fx:id="vbRest1" alignment="CENTER" prefWidth="400.0" stylesheets="/menu.css">
     <GridPane fx:id="gr6">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
@@ -181,7 +186,7 @@
         </rowConstraints>
         <children>
             <Label text="Kérjen le egy user-t a https://gorest.co.in szerverről!" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label text="Üresen, az összes user-t megkapja (JSON formátumban)." GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="Üresen, az összes user-t megkapja." GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <TextField fx:id="tf6" promptText="User ID" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <Button mnemonicParsing="false" onAction="#btnRest1MenuReadClick" text="User lekérdezés" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <Label text="A lekérdezett személy(ek) JSON listája:" GridPane.columnIndex="1" GridPane.rowIndex="7" />
@@ -290,14 +295,14 @@
     </GridPane>
     </VBox>
 
-    <VBox spacing="30.0" fx:id="vbDataMining" alignment="CENTER">
+    <VBox spacing="50.0" fx:id="vbDataMining" alignment="CENTER" stylesheets="/menu.css">
     <GridPane fx:id="gpAlg" hgap="2" vgap="4">
         <Label fx:id="lb3">Kérem válassza ki az algoritmust!</Label>
         <ComboBox fx:id="cb2" GridPane.rowIndex="2" GridPane.columnIndex="1" onAction="#handleComboBoxSelection2"/>
     </GridPane>
     </VBox>
 
-    <VBox spacing="30.0" fx:id="vbOthers">
+    <VBox spacing="50.0" fx:id="vbOthers">
         <children>
             <Label fx:id="label1" text="Label 1"/>
             <Label fx:id="label2" text="Label 2"/>
@@ -306,18 +311,18 @@
         </children>
     </VBox>
 
-    <VBox spacing="50.0" fx:id="vbForex">
+    <VBox spacing="50.0" fx:id="vbForex" alignment="CENTER" stylesheets="/menu.css">
         <TableView fx:id="tvForex" >
         </TableView>
 
-        <GridPane fx:id="gpActPrice" hgap="2" vgap="4">
+        <GridPane fx:id="gpActPrice" hgap="2" vgap="4" alignment="CENTER">
             <Label fx:id="lb4">Kérem válassza ki a devizapárt!</Label>
             <ComboBox fx:id="cbActPrice" GridPane.rowIndex="2" GridPane.columnIndex="1" onAction="#handleComboBoxSelection"/>
             <TextArea fx:id="taActPrice"> </TextArea>
             <Label fx:id="lbActPrice"></Label>
         </GridPane>
 
-        <GridPane fx:id="gpPositionClose" hgap="2" vgap="4">
+        <GridPane fx:id="gpPositionClose" hgap="2" vgap="4" alignment="CENTER">
         <Label GridPane.rowIndex="0" GridPane.columnIndex="0">Trade Id</Label>
         <TextField fx:id="tfTrade" GridPane.rowIndex="0" GridPane.columnIndex="1"></TextField>
         <Button fx:id="btTrade" onAction="#btTradeClick" GridPane.rowIndex="11" GridPane.columnIndex="1" >Küldés</Button>

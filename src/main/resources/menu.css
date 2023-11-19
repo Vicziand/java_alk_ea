@@ -1,0 +1,25 @@
+.menu-item {
+    -fx-font-size: 14px;
+}
+
+.menu-bar {
+    -fx-background-color: rgba(91, 131, 131, 0.33);
+}
+
+.label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.text-field {
+    -fx-font-size: 14px;
+}
+
+.button {
+    -fx-font-size: 14px;
+}
+
+.table-view {
+    -fx-font-size: 14px;
+    -fx-background-color: rgba(211, 211, 211, 0.61);
+}
