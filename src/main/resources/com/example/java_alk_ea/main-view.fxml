@@ -302,7 +302,7 @@
     </GridPane>
     </VBox>
 
-    <VBox spacing="50.0" fx:id="vbOthers">
+    <VBox spacing="50.0" fx:id="vbOthers" alignment="CENTER">
         <children>
             <Label fx:id="label1" text="Label 1"/>
             <Label fx:id="label2" text="Label 2"/>
@@ -311,7 +311,7 @@
         </children>
     </VBox>
 
-    <VBox spacing="50.0" fx:id="vbForex" alignment="CENTER" stylesheets="/menu.css">
+    <VBox spacing="60.0" fx:id="vbForex" alignment="CENTER" stylesheets="/menu.css">
         <TableView fx:id="tvForex" >
         </TableView>
 

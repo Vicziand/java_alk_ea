@@ -903,7 +903,7 @@ public class Controller {
             int count = 1;
             while (!stopThreads) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(1000); //1 sec késleltetés
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -916,7 +916,7 @@ public class Controller {
             int count = 1;
             while (!stopThreads) {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(2000); //2 sec késleltetés
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -1090,12 +1090,10 @@ public class Controller {
         ObservableList<String> instrumentsList = FXCollections.observableArrayList(instruments);
         cbActPrice.setItems(instrumentsList);
 
-        // ComboBox kiválasztásának figyelése
         cbActPrice.setOnAction(event -> {
             String selectedInstrument = (String) cbActPrice.getValue();
             if (selectedInstrument != null) {
                 Nyitás(selectedInstrument);
-                System.out.println("Kész");
             }
         });
     }
@@ -1111,11 +1109,21 @@ public class Controller {
             marketorderrequest.setUnits(-10);
             request.setOrder(marketorderrequest);
             OrderCreateResponse response = ctx.order.create(request);
-            System.out.println("tradeId: "+response.getOrderFillTransaction().getId());
+            showAlertPositionOpen("tradeId: "+response.getOrderFillTransaction().getId());
+            //System.out.println("tradeId: "+response.getOrderFillTransaction().getId());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
+    private static void showAlertPositionOpen(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Sikeres pozíció nyitás");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 
     @FXML
     public void menuPositionClose() {
@@ -1146,9 +1154,18 @@ public class Controller {
         TransactionID tradeId = new TransactionID(Integer.toString(selectedId));
         try {
             ctx.trade.close(new TradeCloseRequest(accountId, new TradeSpecifier(tradeId.toString())));
+            showAlertPositionClose("tradeId: "+tradeId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void showAlertPositionClose(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Sikeres pozíció zárás");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML
