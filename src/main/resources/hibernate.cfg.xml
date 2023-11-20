@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-configuration">
 <hibernate-configuration>
     <session-factory>
-        <property name="connection.url">jdbc:sqlite:/c:/adatbazis/notebook.db</property>
+        <property name="connection.url">jdbc:sqlite:/c:/adatbazis/adatok.db</property>
         <property name="dialect">org.sqlite.hibernate.dialect.SQLiteDialect</property>
         <property name="connection.driver_class">org.sqlite.JDBC</property>
         <mapping class="Grafikus.Gep"/>

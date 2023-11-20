@@ -16,11 +16,15 @@ import com.oanda.v20.account.AccountID;
 import java.io.IOException;
 
 public class MainApplication extends Application {
-    public static SessionFactory factory;
+    private static SessionFactory factory;
+
+    public static void setSessionFactory(SessionFactory sessionFactory) {
+        factory = sessionFactory;
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
-        //  FXML fájl betöltése
+        // FXML fájl betöltése
         FXMLLoader loader = new FXMLLoader(getClass().getResource("main-view.fxml"));
         Parent root = loader.load();
 
@@ -31,22 +35,23 @@ public class MainApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
+        // Controller inicializálása a SessionFactory-vel
         Controller controller = loader.getController();
         controller.initializeSessionFactory(factory);
-
     }
 
-
-    public static void main(String[] args) {
+    @Override
+    public void init() throws Exception {
 
         StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
                 .configure("hibernate.cfg.xml")
                 .build();
         Metadata metadata = new MetadataSources(standardRegistry).getMetadataBuilder().build();
         factory = metadata.getSessionFactoryBuilder().build();
-        
+    }
+
+    public static void main(String[] args) {
 
         launch(args);
-        }
-
     }
+}
